@@ -10,6 +10,25 @@ Keep bank and credit card accounts clean and audit-ready. Reconciliation runs in
 1. **Prep phase (MCP tools)** — health check, record missing transactions, resolve duplicates and uncategorized items
 2. **Reconcile phase (browser)** — open QB Online reconciliation UI, mark transactions cleared, enter statement balance, finalize
 
+## Which company? (do this first)
+
+One DeepLedger connection reaches every company the user can access. Before
+anything else in this skill:
+
+1. Call `qbCompanyProfile` (operation `profile`, the default). Its `company`
+   field names the company you are in. Say the company name to the user in your
+   first line.
+2. If it answers `NO_ACTIVE_COMPANY`, call `qbCompanyProfile` with
+   `operation: "list"`, then `operation: "switch"` with the `organizationId` the
+   user means. Never guess between similar names; ask.
+3. If the user names a different company than the active one, switch first.
+   The switch is proven by a CompanyInfo read; a `qbConnected: false` answer
+   means QuickBooks is not connected for that company and only tasks, documents,
+   memory and the bank feed will work.
+4. Every tool result carries `company`. If one carries `warning` (the active
+   company was moved from the portal or another client), stop and confirm the
+   company with the user before writing.
+
 ## Trigger
 
 Activate when the user wants to:

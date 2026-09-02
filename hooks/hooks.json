@@ -2,6 +2,15 @@
   "hooks": {
     "PreToolUse": [
       {
+        "matcher": "qbExpense|qbBill|qbBillPayment|qbInvoice|qbSalesReceipt|qbReceivePayment|qbDeposit|qbJournalEntry|qbTransfer|qbRefundReceipt|qbCredit|qbEstimate|qbRecurringTransaction|qbVoidTransaction|qbSendEmail",
+        "hooks": [
+          {
+            "type": "prompt",
+            "prompt": "COMPANY GUARD — You are a pre-tool-call validator. One DeepLedger connection can switch between many QuickBooks companies, so a write must go to the company the user meant.\n\n1. Was qbCompanyProfile called earlier in this conversation (any operation), so that the active company is known by name? If NOT, respond with:\n   {\"decision\": \"block\", \"reason\": \"COMPANY UNKNOWN: Call qbCompanyProfile first so the active company is confirmed by name before writing to QuickBooks. If the user meant a different company, switch with qbCompanyProfile(operation:'switch') first.\"}\n\n2. Does the most recent qbCompanyProfile result (its company / profile.companyName) name the company the user is talking about? If the user named a company and it differs, respond with:\n   {\"decision\": \"block\", \"reason\": \"WRONG COMPANY: The active company is not the one the user asked about. Switch with qbCompanyProfile(operation:'switch', organizationId:...) and confirm, then retry.\"}\n\n3. Did any tool result since the last qbCompanyProfile call carry a `warning` saying the active company changed? If so, respond with:\n   {\"decision\": \"block\", \"reason\": \"COMPANY CHANGED: The active company was moved from outside this session. Call qbCompanyProfile, tell the user which company is active, and get confirmation before writing.\"}\n\nIf all three pass, respond with:\n   {\"decision\": \"allow\"}"
+          }
+        ]
+      },
+      {
         "matcher": "qbExpense|qbBill|qbBillPayment|qbInvoice|qbSalesReceipt|qbReceivePayment|qbDeposit|qbJournalEntry|qbTransfer|qbRefundReceipt|qbCredit|qbEstimate|qbPurchaseOrder|qbRecurringTransaction",
         "hooks": [
           {

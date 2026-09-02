@@ -7,6 +7,25 @@ description: Manage the general ledger — record journal entries, adjusting ent
 
 Manage the general ledger directly. Record standard journal entries, handle inter-account transfers, and perform period corrections using reversing entries.
 
+## Which company? (do this first)
+
+One DeepLedger connection reaches every company the user can access. Before
+anything else in this skill:
+
+1. Call `qbCompanyProfile` (operation `profile`, the default). Its `company`
+   field names the company you are in. Say the company name to the user in your
+   first line.
+2. If it answers `NO_ACTIVE_COMPANY`, call `qbCompanyProfile` with
+   `operation: "list"`, then `operation: "switch"` with the `organizationId` the
+   user means. Never guess between similar names; ask.
+3. If the user names a different company than the active one, switch first.
+   The switch is proven by a CompanyInfo read; a `qbConnected: false` answer
+   means QuickBooks is not connected for that company and only tasks, documents,
+   memory and the bank feed will work.
+4. Every tool result carries `company`. If one carries `warning` (the active
+   company was moved from the portal or another client), stop and confirm the
+   company with the user before writing.
+
 ## Trigger
 
 Activate when the user wants to:

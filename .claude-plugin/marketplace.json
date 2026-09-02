@@ -10,7 +10,7 @@
     {
       "name": "deepledger",
       "description": "AI bookkeeper — records transactions, processes bank feeds, generates financial reports, and self-improves through pattern learning. QuickBooks Online integration via MCP.",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": {
         "name": "DeepLedger",
         "email": "support@deepledger.ai"

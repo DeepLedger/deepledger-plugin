@@ -9,6 +9,25 @@ Run the structured month-end close process: reconcile all accounts, clear outsta
 
 Everything you write via `closeRun` renders on the portal's **Close Sheet** — the CPA reviews the close as annotated financial statements and signs at the bottom. You prove; the CPA judges; the document records. (Mirrors the `month_end_closing` guide in deepledger-mcp — keep in sync.)
 
+## Which company? (do this first)
+
+One DeepLedger connection reaches every company the user can access. Before
+anything else in this skill:
+
+1. Call `qbCompanyProfile` (operation `profile`, the default). Its `company`
+   field names the company you are in. Say the company name to the user in your
+   first line.
+2. If it answers `NO_ACTIVE_COMPANY`, call `qbCompanyProfile` with
+   `operation: "list"`, then `operation: "switch"` with the `organizationId` the
+   user means. Never guess between similar names; ask.
+3. If the user names a different company than the active one, switch first.
+   The switch is proven by a CompanyInfo read; a `qbConnected: false` answer
+   means QuickBooks is not connected for that company and only tasks, documents,
+   memory and the bank feed will work.
+4. Every tool result carries `company`. If one carries `warning` (the active
+   company was moved from the portal or another client), stop and confirm the
+   company with the user before writing.
+
 ## The Close Sheet data contract
 
 - **Anchors** pin checks/entries to statement lines: `pl:<line_id>` | `bs:<line_id>` | `tie:<tie_id>`. Tie ids: `trial_balance, bank_rec, suspense, undeposited, cutoff, ap_ar, payroll, sales_tax, period_lock, recurring`. Every `warning`/`action_needed` check needs an anchor; use `tie:*` when it isn't a statement line.
