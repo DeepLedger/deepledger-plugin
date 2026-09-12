@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.1] - 2026-09-12
+
+### Changed
+
+- Recording and month-end close skills load their current procedures through `getGuide` instead of maintaining separate workflow copies.
+- Both skills explain guide-read failures, targeted error recovery, verification, company checks and credential limits. Close adjustments remain proposed until approved, with human final sign-off.
+
 ## [2.0.0] - 2026-07-18
 
 ### Removed
