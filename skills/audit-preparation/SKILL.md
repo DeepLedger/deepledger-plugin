@@ -1,11 +1,11 @@
 ---
-name: bank-reconciliation
-description: Prepare a bank or credit-card reconciliation workbook, investigate statement differences, or help complete matching and reconciliation in the QuickBooks UI using available authorized browser/computer-use tools. Use when the user asks to reconcile an account or statement, explain a reconciliation difference, or prepare a reconciliation workbook.
+name: audit-preparation
+description: Prepare an audit or review evidence packet, supporting schedules, transaction support index or missing-document list. Use when the user asks to prepare records for review or audit, assemble audit support, or organize evidence for selected transactions.
 ---
 
-# Bank Reconciliation
+# Audit Preparation
 
-Prepare evidence and a workbook, then distinguish that result from verified QuickBooks UI completion. DeepLedger MCP cannot finalize QuickBooks reconciliation. Browser or computer-use assistance requires actual session capability, scoped permission and reviewer approval of finalization.
+Prepare a traceable evidence packet with clear population or sample scope and unresolved requests. This is preparation for reviewer judgment, not an audit opinion or sign-off.
 
 ## Select the company
 
@@ -20,7 +20,7 @@ on tool responses throughout the work.
 Before beginning the workflow, call:
 
 ```text
-getGuide(guideType="reconciliation")
+getGuide(guideType="audit_preparation")
 ```
 
 Follow its `steps`, `safetyChecklist` and `commonMistakes`. The server's

@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.0] - 2026-09-12
+
+### Added
+
+- Audit preparation skill loads the shared evidence-packet procedure.
+
+### Changed
+
+- Reconciliation and financial analysis now load current Supabase-backed workflows through `getGuide`.
+- Reconciliation distinguishes workbook preparation from QuickBooks UI matching and finalization, including authorized browser/computer-use assistance and saved-report verification.
+
 ## [2.1.1] - 2026-09-12
 
 ### Changed
