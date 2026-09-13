@@ -48,14 +48,15 @@ Just ask in plain language — the matching skill activates automatically:
 |-------|----------------|
 | `client-onboarding` | Onboard a new client — assess the books, seed policies/patterns/general memory with CPA review |
 | `bank-feed-processing` | Categorize, match, record, or flag bank feed transactions |
-| `bank-reconciliation` | Reconcile bank/CC accounts, fix duplicates and uncategorized items |
-| `record-transactions` | The go-to recording guide — tool selection, decide gate, edge cases |
+| `bank-reconciliation` | Prepare reconciliation workbooks and complete the QuickBooks UI handoff |
+| `record-transactions` | Shared recording procedure: tool selection, approval, verification |
 | `accounts-payable` | Bills, vendor payments, vendor credits, AP aging |
 | `accounts-receivable` | Invoices, customer payments, credits, AR aging, collections |
 | `journal-entries` | Journal entries, adjusting entries, transfers, corrections |
 | `master-data` | Chart of accounts, vendors, customers, items, classes, tax rates |
-| `month-end-close` | Full close workflow — drafts the Close Sheet (anchored 16-point checks, line-level statements, proposed entries) for CPA sign-off in the portal |
-| `financial-analysis` | Reports, ratios, trends, CFO-level insights |
+| `month-end-close` | Shared close workflow: drafts the Close Sheet (anchored 16-point checks, line-level statements, proposed entries) for human sign-off in the portal |
+| `financial-analysis` | Comparable reports, ratios, trends and evidence-backed explanations |
+| `audit-preparation` | Supporting schedules, evidence index and missing-document requests |
 
 ## Safety Model
 
@@ -99,7 +100,7 @@ Anything else is escalated as a CPA task — the agent never guesses an account.
 
 ```
 Plugin (this repo)
-  ├── skills/     → 10 bookkeeping + financial analysis skills
+  ├── skills/     → 11 bookkeeping and review preparation skills
   ├── hooks/      → Safety validation guards on every QB write
   └── .mcp.json   → DeepLedger MCP connector
   ↓ Streamable HTTP

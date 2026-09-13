@@ -1,154 +1,48 @@
 ---
 name: financial-analysis
-description: Generate financial reports, analyze business health, compute ratios, identify trends, and provide actionable CFO-level insights. Use when the user mentions P&L, balance sheet, cash flow, financial health, ratios, trends, or budget vs actuals.
+description: Analyze financial performance, cash movements, report comparisons or budget variances using comparable QuickBooks figures and traceable evidence. Use when the user asks for financial analysis, trends, ratios, budget comparisons or explanations of profit and cash changes.
 ---
 
-# Financial Analysis Skill
+# Financial Analysis
 
-Expertise in generating financial reports, analyzing business health, computing ratios, identifying trends, and providing actionable CFO-level insights.
+Answer the business question with comparable figures, supported drivers and explicit assumptions. Keep analysis read-only unless a specific follow-up action is authorized.
 
-## Which company? (do this first)
+## Select the company
 
-One DeepLedger connection reaches every company the user can access. Before
-anything else in this skill:
+Call `qbCompanyProfile` and identify the active company. If no company is
+selected, list accessible companies and switch to the one the user means.
+Ask when the choice is ambiguous. If the active company changes during the
+workflow, confirm the intended company before a write. Check company context
+on tool responses throughout the work.
 
-1. Call `qbCompanyProfile` (operation `profile`, the default). Its `company`
-   field names the company you are in. Say the company name to the user in your
-   first line.
-2. If it answers `NO_ACTIVE_COMPANY`, call `qbCompanyProfile` with
-   `operation: "list"`, then `operation: "switch"` with the `organizationId` the
-   user means. Never guess between similar names; ask.
-3. If the user names a different company than the active one, switch first.
-   The switch is proven by a CompanyInfo read; a `qbConnected: false` answer
-   means QuickBooks is not connected for that company and only tasks, documents,
-   memory and the bank feed will work.
-4. Every tool result carries `company`. If one carries `warning` (the active
-   company was moved from the portal or another client), stop and confirm the
-   company with the user before writing.
+## Load the current procedure
 
-## Trigger
+Before beginning the workflow, call:
 
-Activate this skill when the user wants to:
-- Generate a P&L, Balance Sheet, Cash Flow, or aging report
-- Analyze profitability, margins, or revenue trends
-- Calculate financial ratios (current ratio, DSO, debt-to-equity, etc.)
-- Assess cash runway or cash flow health
-- Compare performance across periods
-- Check customer concentration or vendor spending patterns
-- Run a financial health check
-
-## Report Types Available
-
-| Report | Tool Call | Purpose |
-|--------|-----------|---------|
-| Profit & Loss | `qbReports(reportType="ProfitAndLoss")` | Revenue, expenses, net income |
-| P&L by Class | `qbReports(reportType="ProfitAndLossByClass")` | P&L with one column per class |
-| P&L Detail | `qbReports(reportType="ProfitAndLossDetail")` | Transaction-level drill-down |
-| Balance Sheet | `qbReports(reportType="BalanceSheet")` | Assets, liabilities, equity |
-| Cash Flow | `qbReports(reportType="CashFlow")` | Operating, investing, financing flows |
-| Aged Receivables | `qbReports(reportType="AgedReceivables")` | Who owes you, how overdue |
-| Aged Receivables Detail | `qbReports(reportType="AgedReceivablesDetail")` | Invoice-level AR aging |
-| Aged Payables | `qbReports(reportType="AgedPayables")` | What you owe, when due |
-| Aged Payables Detail | `qbReports(reportType="AgedPayablesDetail")` | Bill-level AP aging |
-| Trial Balance | `qbReports(reportType="TrialBalance")` | All accounts, debits = credits |
-| Sales by Customer | `qbReports(reportType="SalesByCustomer")` | Revenue by customer |
-| Customer Income | `qbReports(reportType="CustomerIncome")` | Customer profitability |
-| Customer Balance | `qbReports(reportType="CustomerBalance")` | Total AR owed per customer |
-| Sales by Product | `qbReports(reportType="SalesByProduct")` | Product/service revenue |
-| Vendor Expenses | `qbReports(reportType="VendorExpenses")` | Spending by vendor |
-| Vendor Balance | `qbReports(reportType="VendorBalance")` | Total AP owed per vendor |
-| Transaction List | `qbReports(reportType="TransactionList")` | All transactions in a period |
-| General Ledger | `qbReports(reportType="GeneralLedger")` | Per-account transaction history |
-| Budget vs Actuals | `qbReports(reportType="BudgetVsActuals")` | Actual vs budget vs variance per account |
-
-## Workflow: Full Financial Analysis
-
-Follow the `getGuide(guideType="financial_analysis")` workflow:
-
-### Step 1: Pull Core Financial Reports
-```
-qbReports → P&L (current month, QTD, YTD with prior period comparison)
-qbReports → Balance Sheet (current date with prior month comparison)
-qbReports → Cash Flow (current month and YTD)
+```text
+getGuide(guideType="financial_analysis")
 ```
 
-Use `summarizeBy: "Month"` for trend visibility.
-Keep `accountingMethod` consistent across all reports.
+Follow its `steps`, `safetyChecklist` and `commonMistakes`. The server's
+published guide is the shared procedure for this skill and other clients;
+do not substitute an older remembered copy. Tool schemas remain the authority
+for accepted arguments. This skill does not expand the user's request,
+transaction approval or the credential's permissions. Unattended credentials
+do not gain QuickBooks write access from a guide.
 
-### Step 2: Analyze Profitability
-Calculate from P&L data:
-- **Gross Margin** = (Revenue - COGS) / Revenue
-- **Operating Margin** = Operating Income / Revenue
-- **Net Margin** = Net Income / Revenue
+If `success:false`, use the returned `errorCode`. A missing or draft guide
+(`GUIDE_NOT_AVAILABLE`) is not an empty checklist. A failed or invalid read
+(`GUIDE_FETCH_FAILED`) may be retried; if it persists, explain that the
+procedure is unavailable and hand off dependent work. Do not invent the
+missing procedure or loop on the same failure.
 
-Drill deeper with:
-- `SalesByCustomer` → revenue concentration risk
-- `SalesByProduct` → which offerings are most profitable
-- `VendorExpenses` → spending pattern analysis
+## Recover and verify
 
-### Step 3: Review Cash Position
-From Cash Flow statement:
-- Separate operating, investing, and financing flows
-- **Cash Runway** = Cash on Hand / Average Monthly Cash Burn
-- Review AR aging for incoming cash timing
-- Review AP aging for upcoming obligations
+For a tool failure you cannot resolve from its response, call
+`getGuide(guideType="error_recovery", tool="<failed tool>", errorCode="<returned code>")`.
+If no code was returned, use its refusal message. Follow the matching action,
+verification and stop condition. Message-based matches are candidates; check
+which condition actually applies. Read back an uncertain write before retrying.
 
-Red flags:
-- Operating cash flow negative while P&L shows profit → investigate AR
-- Cash runway < 3 months → critical alert
-
-### Step 4: Compute Key Ratios
-
-**Liquidity:**
-- Current Ratio = Current Assets / Current Liabilities (target > 1.5)
-- Quick Ratio = (Current Assets - Inventory) / Current Liabilities
-
-**Efficiency:**
-- DSO = AR / (Annual Revenue / 365) — rising DSO = collection problems
-- DPO = AP / (Annual COGS / 365)
-
-**Leverage:**
-- Debt-to-Equity = Total Liabilities / Equity
-
-### Step 5: Identify Trends & Anomalies
-
-Flag these conditions:
-- Revenue declining 3+ consecutive months
-- Expense categories growing faster than revenue
-- Margin compression vs prior periods
-- Top customer > 30% of revenue (concentration risk)
-- DSO increasing month-over-month
-- Cash runway < 3 months
-
-Use `qbReports(reportType="GeneralLedger")` or `qbFetchTransactions` on the relevant accounts to spot statistical outliers (amounts far outside the account's normal range).
-
-### Step 6: Synthesize & Present
-
-Structure the output:
-1. **Headline** — One sentence: overall health
-2. **Key Metrics Table** — Numbers with period-over-period comparison
-3. **Trends** — Improving / declining / stable with percentages
-4. **Risks** — Issues requiring attention
-5. **Recommendations** — Specific, actionable next steps
-
-Save key insights to `agentMemory` for longitudinal tracking.
-
-## Presentation Rules
-
-- Never present a number without comparison context
-- Lead with the most impactful finding
-- Use percentages for changes, not just absolute numbers
-- Need 3+ data points to call something a "trend"
-- Account for seasonality before flagging declines
-- Never mix Accrual and Cash basis between reports
-- Never compare a partial month to a full month
-
-## Health Check Quick Mode
-
-For a fast health check:
-1. Scan all bank + CC accounts with `qbFetchTransactions` (duplicates, uncategorized entries) and `qbReports(reportType="GeneralLedger")` (outliers)
-2. `qbReports(reportType="ProfitAndLoss")` for current month
-3. `qbReports(reportType="AgedReceivables")` for overdue AR
-4. `qbReports(reportType="AgedPayables")` for upcoming AP
-
-Present: health scores, headline P&L, overdue amounts, and any flags.
+Report confirmed outcomes and unresolved tasks. A tool call alone is not
+proof that the intended transaction, attachment or close state was saved.

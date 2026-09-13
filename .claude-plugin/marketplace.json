@@ -9,8 +9,8 @@
   "plugins": [
     {
       "name": "deepledger",
-      "description": "AI bookkeeper — records transactions, processes bank feeds, generates financial reports, and self-improves through pattern learning. QuickBooks Online integration via MCP.",
-      "version": "2.1.1",
+      "description": "AI agent for bookkeeping with QuickBooks Online integration via DeepLedger: transactions, bank feeds, financial reports and shared workflow guides.",
+      "version": "2.2.0",
       "author": {
         "name": "DeepLedger",
         "email": "support@deepledger.ai"
@@ -20,7 +20,14 @@
       "homepage": "https://deepledger.ai",
       "repository": "https://github.com/naga-deepledger/deepledger-plugin",
       "license": "MIT",
-      "keywords": ["quickbooks", "bookkeeping", "accounting", "finance", "ai-cfo", "bank-reconciliation"]
+      "keywords": [
+        "quickbooks",
+        "bookkeeping",
+        "accounting",
+        "finance",
+        "ai-cfo",
+        "bank-reconciliation"
+      ]
     }
   ]
 }
