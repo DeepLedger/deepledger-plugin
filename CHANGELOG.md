@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.1] - 2026-09-16
+
+### Changed
+
+- Accounts receivable: invoice workflow gains a **Payment options** step — read the customer's "Pay now" policy from `agentMemory` and pass `allowOnlineCreditCardPayment` / `allowOnlineACHPayment` on every invoice for that customer (`false` hides that method); omit both when no policy is stored. Requires DeepLedger MCP with the per-invoice payment toggles on `qbInvoice`.
+
 ## [2.2.0] - 2026-09-12
 
 ### Added
