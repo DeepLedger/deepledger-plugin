@@ -1,6 +1,6 @@
 {
   "name": "deepledger",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "AI agent for bookkeeping with QuickBooks Online integration via DeepLedger: transactions, bank feeds, financial reports and shared workflow guides.",
   "hooks": "./hooks/hooks.json",
   "author": {

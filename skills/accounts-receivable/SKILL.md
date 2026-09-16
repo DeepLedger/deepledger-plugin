@@ -59,6 +59,7 @@ For immediate-pay sales with no invoice: `qbSalesReceipt` → Undeposited Funds 
 6. **Record** — `qbInvoice` to create
 7. **Attach** — `qbAttachFile` (entityType = "Invoice") — signed contract, PO, or supporting doc from portal, local file, drive, or user upload; preferred for audit-ready books
 8. **Optional** — Set `emailStatus: "NeedToSend"` to auto-email the invoice from QB
+9. **Payment options** — Check `agentMemory` for the customer's "Pay now" policy (e.g. "no credit card — ACH only"). If one is stored, pass `allowOnlineCreditCardPayment` / `allowOnlineACHPayment` on every invoice for that customer (`false` hides that method). If no policy is stored, omit both — QuickBooks applies the company default — and do not guess. QuickBooks has no per-customer setting; the invoice is the only place this lives. Confirm from the response's `allowOnlineCreditCardPayment` / `allowOnlineACHPayment` (what QuickBooks stored), not from what you sent.
 
 ## Workflow: Receive Payment
 
