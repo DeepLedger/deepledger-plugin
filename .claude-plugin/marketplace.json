@@ -18,7 +18,7 @@
       "source": "./",
       "category": "productivity",
       "homepage": "https://deepledger.ai",
-      "repository": "https://github.com/naga-deepledger/deepledger-plugin",
+      "repository": "https://github.com/DeepLedger/deepledger-plugin",
       "license": "MIT",
       "keywords": [
         "quickbooks",
