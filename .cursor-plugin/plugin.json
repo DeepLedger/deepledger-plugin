@@ -1,6 +1,6 @@
 {
   "name": "deepledger",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "AI agent for bookkeeping with QuickBooks Online via DeepLedger: record transactions with duplicate checks and human review, process the bank feed, run financial reports, and prepare the month-end close.",
   "author": {
     "name": "DeepLedger",
@@ -18,5 +18,5 @@
   ],
   "logo": "assets/logo.svg",
   "skills": "./skills",
-  "mcpServers": "./.mcp.json"
+  "mcpServers": "./mcp.json"
 }

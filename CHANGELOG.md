@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.3.0] - 2026-09-16
+
+### Added
+
+- Cursor plugin manifest (`.cursor-plugin/plugin.json`), a root `mcp.json` in Cursor's format, and a logo, so one repository serves Claude Code, Cursor, Grok Build and Grok Bot.
+- MIT `LICENSE` file. The manifest had declared MIT since 2.0.0 without shipping the text.
+
+### Changed
+
+- Repository moved to the DeepLedger GitHub organization; manifests point at the new URL.
+- Claude Code hooks moved from `hooks/hooks.json` to `.claude-plugin/hooks.json` so hosts with a different hooks format do not load them by default. The Claude Code manifest declares the new path.
+- README rewritten host-neutral with per-host install steps; server tool count corrected to 27; reviewer wording replaces "CPA".
+
 ## [2.2.1] - 2026-09-16
 
 ### Changed

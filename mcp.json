@@ -1,0 +1,7 @@
+{
+  "mcpServers": {
+    "deepledger": {
+      "url": "https://mcp.deepledger.ai/mcp"
+    }
+  }
+}
