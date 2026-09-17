@@ -1,0 +1,22 @@
+{
+  "name": "deepledger",
+  "version": "2.2.1",
+  "description": "AI agent for bookkeeping with QuickBooks Online via DeepLedger: record transactions with duplicate checks and human review, process the bank feed, run financial reports, and prepare the month-end close.",
+  "author": {
+    "name": "DeepLedger",
+    "url": "https://deepledger.ai"
+  },
+  "homepage": "https://deepledger.ai",
+  "repository": "https://github.com/naga-deepledger/deepledger-plugin",
+  "license": "MIT",
+  "keywords": [
+    "deepledger",
+    "quickbooks",
+    "bookkeeping",
+    "accounting",
+    "month-end close"
+  ],
+  "logo": "assets/logo.svg",
+  "skills": "./skills",
+  "mcpServers": "./.mcp.json"
+}

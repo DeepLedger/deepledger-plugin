@@ -1,0 +1,38 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="nodeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="1"/>
+      <stop offset="40%" stop-color="#A8C8FF" stop-opacity="1"/>
+      <stop offset="100%" stop-color="#4285F4" stop-opacity="0.85"/>
+    </radialGradient>
+    <filter id="softGlow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="pathGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="2.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- White background -->
+  <rect width="200" height="200" fill="#FFFFFF"/>
+  <!-- AP — blue path -->
+  <path d="M 100 14 C 100 14 72 28 62 58 C 52 88 76 100 100 100"
+    fill="none" stroke="#4285F4" stroke-width="15" stroke-linecap="round" filter="url(#pathGlow)"/>
+  <path d="M 100 14 C 100 14 72 28 62 58 C 52 88 76 100 100 100"
+    fill="none" stroke="#4285F4" stroke-width="15" stroke-linecap="round"/>
+  <!-- AR — green path -->
+  <path d="M 22 158 C 22 158 38 134 62 122 C 84 111 94 106 100 100"
+    fill="none" stroke="#34A853" stroke-width="15" stroke-linecap="round" filter="url(#pathGlow)"/>
+  <path d="M 22 158 C 22 158 38 134 62 122 C 84 111 94 106 100 100"
+    fill="none" stroke="#34A853" stroke-width="15" stroke-linecap="round"/>
+  <!-- GL — gold path -->
+  <path d="M 178 158 C 178 158 162 134 138 122 C 116 111 106 106 100 100"
+    fill="none" stroke="#FBBC05" stroke-width="15" stroke-linecap="round" filter="url(#pathGlow)"/>
+  <path d="M 178 158 C 178 158 162 134 138 122 C 116 111 106 106 100 100"
+    fill="none" stroke="#FBBC05" stroke-width="15" stroke-linecap="round"/>
+  <!-- Convergence node -->
+  <circle cx="100" cy="100" r="22" fill="#4285F4" opacity="0.18"/>
+  <circle cx="100" cy="100" r="18" fill="url(#nodeGlow)" filter="url(#softGlow)"/>
+  <circle cx="100" cy="100" r="6" fill="#FFFFFF"/>
+</svg>
