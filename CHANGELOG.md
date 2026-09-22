@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.2] - 2026-09-21
+
+### Changed
+
+- Positioned as an AI staff accountant for QuickBooks Online across the manifests and README: who it is for, what the agent does by area, and how to use it from connect to review.
+
 ## [3.1.1] - 2026-09-21
 
 ### Added

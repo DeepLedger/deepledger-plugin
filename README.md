@@ -1,8 +1,48 @@
 # DeepLedger Plugin
 
-AI bookkeeping for QuickBooks Online, packaged as a thin plugin for Claude Code, Cursor, Grok Build and Grok Bot. It contains two things: a connector to DeepLedger's hosted MCP server and one `bookkeeping` skill. The skill does not carry procedures itself; it tells the agent which procedure to pull from the server's `getGuide` tool for each kind of request, so bookkeeping guidance updates on the server without a plugin release. There are no slash commands, agents, hooks or scripts.
+DeepLedger is an **AI staff accountant for QuickBooks Online**. Install this plugin in Claude Code, Cursor, Grok Build or Grok Bot, sign in with your DeepLedger account, and ask for bookkeeping in plain language. The agent reads and writes your QuickBooks company the way a staff accountant would: it looks up the payee, checks for duplicates, picks the right transaction type, records it, and hands anything it is not sure about to a human reviewer instead of guessing.
 
-QuickBooks Online stays the ledger of record. DeepLedger holds the QuickBooks connection your company authorized through Intuit's own OAuth flow, so the plugin never sees Intuit credentials. It signs in to DeepLedger as you and reaches every company you can open in the DeepLedger portal.
+QuickBooks Online stays the ledger of record. DeepLedger holds the QuickBooks connection your company authorized through Intuit's own OAuth flow, so the plugin never sees Intuit credentials. One sign-in reaches every company you can open in the DeepLedger portal.
+
+## Who it is for
+
+- **Small business owners and founders** who keep their own books in QuickBooks Online and want the routine entries, categorization and reports done for them.
+- **Bookkeepers and CPA firms** managing many client companies. One connection switches between companies, every write follows the same protocol, and uncertain items land in a review queue with the agent's reasoning attached.
+- **Finance teams** who want the month-end close, reconciliation prep and management reports drafted for review rather than built from scratch.
+
+## What it does
+
+| Area | What the agent does |
+|------|---------------------|
+| Bank feed | Pulls unrecorded bank and card transactions, categorizes them from the payee's QuickBooks history, records the obvious ones and creates review tasks for the rest |
+| Recording | Records payments, bills, invoices, customer payments, deposits, transfers, refunds, credits and journal entries with an ID lookup and a duplicate check before every write |
+| Payables and receivables | Enters bills and pays them against outstanding balances, invoices customers and applies their payments, applies credits, reports aging |
+| Reconciliation | Matches a bank or card statement to the ledger and prepares the reconciliation workbook and open items |
+| Month-end close | Works the close checklist, drafts adjusting entries and the Close Sheet, and hands the package to a reviewer for sign-off |
+| Reports and analysis | Runs P&L, balance sheet, aging and custom reports, compares periods and explains what moved |
+| Audit preparation | Builds supporting schedules, an evidence index and a missing-document list |
+| Memory | Keeps durable per-company knowledge (policies, recurring patterns, context) and applies reviewer corrections going forward |
+| Human review | Anything uncertain becomes a task with the agent's reasoning; reviewer decisions are applied verbatim |
+
+## How to use it
+
+1. **Connect QuickBooks** at [deepledger.ai](https://deepledger.ai): Settings, QuickBooks, Connect. Repeat for each company you manage.
+2. **Install the plugin** in your host (below) and sign in when the browser opens.
+3. **Ask in plain language.** The `bookkeeping` skill activates on any accounting request:
+
+   ```text
+   Which QuickBooks company is active?
+   Process the bank feed.
+   Record: paid $500 to Office Depot for office supplies with the company credit card.
+   Enter the Acme invoice for $2,400, net 30.
+   Reconcile the operating account against the August statement.
+   Generate a P&L for last month and compare it to the prior month.
+   Close the books for June.
+   ```
+
+4. **Review what it escalated.** Open Tasks in the DeepLedger portal to approve, recategorize or dismiss items the agent was not sure about. Approved tasks are recorded on the next run.
+
+The plugin itself is thin: a connector to DeepLedger's hosted MCP server and one skill. The skill does not carry procedures; it tells the agent which procedure to pull from the server's `getGuide` tool for each kind of request, so bookkeeping guidance updates on the server without a plugin release. There are no slash commands, agents, hooks or scripts.
 
 ## Prerequisites
 
@@ -63,17 +103,6 @@ The plugin ships no scripts, binaries, hooks or shell commands. Everything it do
 | `https://deepledger.ai` | Browser sign-in page opened by the host during authorization. |
 
 Credentials: a DeepLedger account (OAuth sign-in in the browser, scope `quickbooks`). The host stores the resulting token; the plugin never sees, stores or transmits Intuit credentials, and it reads no local files, environment variables or secrets. QuickBooks access is scoped to the companies the signed-in user can already open in the DeepLedger portal.
-
-## Quick start
-
-```
-"Which QuickBooks company is active?"
-"Record: paid $500 to Office Depot for office supplies with the company credit card"
-"Process the bank feed"
-"Reconcile the operating account against the August statement"
-"Generate a P&L for last month and compare it to the prior month"
-"Close the books for June"
-```
 
 ## How the skill works
 

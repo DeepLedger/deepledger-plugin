@@ -1,7 +1,7 @@
 {
   "name": "deepledger",
-  "version": "3.1.1",
-  "description": "Thin connector to DeepLedger's hosted MCP server for QuickBooks Online bookkeeping, plus one skill that pulls the current accounting procedure from the server's getGuide tool.",
+  "version": "3.1.2",
+  "description": "AI staff accountant for QuickBooks Online. Connects to DeepLedger's hosted MCP server and ships one bookkeeping skill that pulls the current accounting procedure from the server. Categorizes and records bank feed transactions with duplicate checks, handles bills, invoices and payments, prepares reconciliations and the month-end close, runs reports and analysis, and escalates anything uncertain to a human reviewer. One sign-in reaches every QuickBooks company you can open.",
   "author": {
     "name": "DeepLedger",
     "url": "https://deepledger.ai"
