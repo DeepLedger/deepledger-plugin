@@ -1,6 +1,10 @@
-# DeepLedger Plugin
+# DeepLedger
 
-DeepLedger is an **AI staff accountant for QuickBooks Online**. Install this plugin in Claude Code, Cursor, Grok Build or Grok Bot, sign in with your DeepLedger account, and ask for bookkeeping in plain language. The agent reads and writes your QuickBooks company the way a staff accountant would: it looks up the payee, checks for duplicates, picks the right transaction type, records it, and hands anything it is not sure about to a human reviewer instead of guessing.
+**AI staff accountant for QuickBooks**
+
+DeepLedger connects QuickBooks to Grok, ChatGPT, Claude and other AI agents, allowing businesses to record bills, invoices, payments, deposits, journal entries and other transactions, run financial reports, manage receivables and payables, and track month-end close using natural language.
+
+This repository packages DeepLedger as a plugin for Claude Code, Cursor, Grok Build and Grok Bot. Install it, sign in with your DeepLedger account, and ask for bookkeeping in plain language. The agent works your QuickBooks company the way a staff accountant would: it looks up the payee, checks for duplicates, picks the right transaction type, records it, and hands anything it is not sure about to a human reviewer instead of guessing.
 
 QuickBooks Online stays the ledger of record. DeepLedger holds the QuickBooks connection your company authorized through Intuit's own OAuth flow, so the plugin never sees Intuit credentials. One sign-in reaches every company you can open in the DeepLedger portal.
 

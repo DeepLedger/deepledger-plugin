@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.3] - 2026-09-21
+
+### Changed
+
+- Official product copy: tagline "AI staff accountant for QuickBooks" and the standard short description across the manifests, the marketplace entry and the README.
+
 ## [3.1.2] - 2026-09-21
 
 ### Changed
