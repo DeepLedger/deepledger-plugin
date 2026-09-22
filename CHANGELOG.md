@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.3.1] - 2026-09-21
+
+### Changed
+
+- README: Grok Build install steps now describe the xAI plugin marketplace listing, and a new "Network access and credentials" section declares every endpoint the plugin reaches and the OAuth scope it needs, as the marketplace review asks.
+
 ## [2.3.0] - 2026-09-16
 
 ### Added

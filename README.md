@@ -34,7 +34,7 @@ ln -s "$(pwd)/deepledger-plugin" ~/.cursor/plugins/local/deepledger
 
 ### Grok Build
 
-Open the plugin marketplace inside Grok Build and add DeepLedger. The catalog entry points at this repository.
+DeepLedger is listed in the [xAI plugin marketplace](https://github.com/xai-org/plugin-marketplace) as a remote source pinned to a commit of this repository. Inside Grok Build open the extensions modal with `/plugins` (or browse with `/marketplace`), select DeepLedger and install it. Grok Build reads the Claude Code manifest, skills and `.mcp.json` directly. Local development: `grok --plugin-dir ./deepledger-plugin`.
 
 ### Grok Bot
 
@@ -43,6 +43,18 @@ Settings, Plugins, search for DeepLedger, Add, then complete the sign-in in your
 ### Sign-in
 
 On first use the host discovers the server's OAuth 2.1 endpoints (authorization code with PKCE, dynamic client registration) and opens a browser sign-in. Sign in with your DeepLedger account and the connection is authorized. DeepLedger personal API keys (`dl_live_...`) are also accepted as Bearer tokens for programmatic clients. The transport is Streamable HTTP at `https://mcp.deepledger.ai/mcp`.
+
+### Network access and credentials
+
+The plugin ships no scripts, binaries or shell commands. Everything it does goes through the hosted MCP server; the hooks are prompt-type validators that never execute code. The only network endpoints it reaches are:
+
+| Endpoint | Purpose |
+|----------|---------|
+| `https://mcp.deepledger.ai/mcp` | MCP server (Streamable HTTP). All QuickBooks reads and writes, tasks, memory, documents and reports. |
+| `https://mcp.deepledger.ai/.well-known/oauth-authorization-server`, `/oauth/register`, `/oauth/authorize`, `/oauth/token`, `/oauth/revoke` | OAuth 2.1 discovery, dynamic client registration, authorization code with PKCE, token refresh and revocation. |
+| `https://deepledger.ai` | Browser sign-in page opened by the host during authorization. |
+
+Credentials: a DeepLedger account (OAuth sign-in in the browser, scope `quickbooks`). The host stores the resulting token; the plugin never sees, stores or transmits Intuit credentials, and it reads no local files, environment variables or secrets. QuickBooks access is scoped to the companies the signed-in user can already open in the DeepLedger portal.
 
 ## Quick start
 
