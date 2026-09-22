@@ -1,6 +1,6 @@
 # DeepLedger Plugin
 
-AI bookkeeping for QuickBooks Online, packaged as one plugin for Claude Code, Cursor, Grok Build and Grok Bot. It bundles eleven bookkeeping skills, a connector to DeepLedger's hosted MCP server and, in Claude Code, prompt hooks that guard every QuickBooks write. There are no slash commands and no custom agents: describe what you need and the matching skill activates.
+AI bookkeeping for QuickBooks Online, packaged as a thin plugin for Claude Code, Cursor, Grok Build and Grok Bot. It contains two things: a connector to DeepLedger's hosted MCP server and one `bookkeeping` skill. The skill does not carry procedures itself; it tells the agent which procedure to pull from the server's `getGuide` tool for each kind of request, so bookkeeping guidance updates on the server without a plugin release. There are no slash commands, agents, hooks or scripts.
 
 QuickBooks Online stays the ledger of record. DeepLedger holds the QuickBooks connection your company authorized through Intuit's own OAuth flow, so the plugin never sees Intuit credentials. It signs in to DeepLedger as you and reaches every company you can open in the DeepLedger portal.
 
@@ -34,7 +34,7 @@ ln -s "$(pwd)/deepledger-plugin" ~/.cursor/plugins/local/deepledger
 
 ### Grok Build
 
-DeepLedger is listed in the [xAI plugin marketplace](https://github.com/xai-org/plugin-marketplace) as a remote source pinned to a commit of this repository. Inside Grok Build open the extensions modal with `/plugins` (or browse with `/marketplace`), select DeepLedger and install it. Grok Build reads the Claude Code manifest, skills and `.mcp.json` directly. Local development: `grok --plugin-dir ./deepledger-plugin`.
+DeepLedger is listed in the [xAI plugin marketplace](https://github.com/xai-org/plugin-marketplace) as a remote source pinned to a commit of this repository. Inside Grok Build open the extensions modal with `/plugins` (or browse with `/marketplace`), select DeepLedger and install it. Grok Build reads the Claude Code manifest, skill and `.mcp.json` directly. Local development: `grok --plugin-dir ./deepledger-plugin`.
 
 ### Grok Bot
 
@@ -46,11 +46,11 @@ On first use the host discovers the server's OAuth 2.1 endpoints (authorization 
 
 ### Network access and credentials
 
-The plugin ships no scripts, binaries or shell commands. Everything it does goes through the hosted MCP server; the hooks are prompt-type validators that never execute code. The only network endpoints it reaches are:
+The plugin ships no scripts, binaries, hooks or shell commands. Everything it does goes through the hosted MCP server. The only network endpoints it reaches are:
 
 | Endpoint | Purpose |
 |----------|---------|
-| `https://mcp.deepledger.ai/mcp` | MCP server (Streamable HTTP). All QuickBooks reads and writes, tasks, memory, documents and reports. |
+| `https://mcp.deepledger.ai/mcp` | MCP server (Streamable HTTP). All QuickBooks reads and writes, guides, tasks, memory, documents and reports. |
 | `https://mcp.deepledger.ai/.well-known/oauth-authorization-server`, `/oauth/register`, `/oauth/authorize`, `/oauth/token`, `/oauth/revoke` | OAuth 2.1 discovery, dynamic client registration, authorization code with PKCE, token refresh and revocation. |
 | `https://deepledger.ai` | Browser sign-in page opened by the host during authorization. |
 
@@ -59,93 +59,52 @@ Credentials: a DeepLedger account (OAuth sign-in in the browser, scope `quickboo
 ## Quick start
 
 ```
-# 1. Onboard a new client (run once per client)
-"Bootstrap this client from their QuickBooks history"
-
-# 2. Process the bank feed
-"Process the bank feed"
-
-# 3. Record a transaction
+"Which QuickBooks company is active?"
 "Record: paid $500 to Office Depot for office supplies with the company credit card"
-
-# 4. Reports and analysis
+"Process the bank feed"
+"Reconcile the operating account against the August statement"
 "Generate a P&L for last month and compare it to the prior month"
-
-# 5. Month-end close
 "Close the books for June"
 ```
 
-> **First time?** Run the client-onboarding skill once per client. It assesses the books and seeds durable memory (client policies, confirmed recurring patterns, lasting context) for human review. Categorization works without it, because accounts are inferred in real time from QuickBooks history, but onboarding gives the agent the rules and context that history cannot express.
+## How the skill works
 
-## Skills
+The `bookkeeping` skill activates on any accounting request. It confirms the active QuickBooks company, then calls the server's `getGuide` tool with the guide type that matches the request and follows the returned steps, safety checklist and common mistakes:
 
-| Skill | What it covers |
-|-------|----------------|
-| `client-onboarding` | Onboard a new client: assess the books, seed policies, patterns and general memory for human review |
-| `bank-feed-processing` | Categorize, match, record, or flag bank feed transactions |
-| `bank-reconciliation` | Prepare reconciliation workbooks and complete the QuickBooks UI handoff |
-| `record-transactions` | Shared recording procedure: tool selection, approval, verification |
-| `accounts-payable` | Bills, vendor payments, vendor credits, AP aging |
-| `accounts-receivable` | Invoices, customer payments, credits, AR aging, collections |
-| `journal-entries` | Journal entries, adjusting entries, transfers, corrections |
-| `master-data` | Chart of accounts, vendors, customers, items, classes, tax rates |
-| `month-end-close` | Shared close workflow: drafts the Close Sheet (anchored 16-point checks, line-level statements, proposed entries) for human sign-off in the portal |
-| `financial-analysis` | Comparable reports, ratios, trends and evidence-backed explanations |
-| `audit-preparation` | Supporting schedules, evidence index and missing-document requests |
+| Request | `getGuide` type |
+|---------|-----------------|
+| Record a payment, bill, invoice, customer payment, refund, credit, deposit, transfer or journal entry; categorize bank feed items; AP and AR writes | `transaction_recording` |
+| Close a month, adjusting entries, Close Sheet | `month_end_closing` |
+| Reconcile a statement, explain a reconciliation difference | `reconciliation` |
+| Report comparisons, ratios, trends, budget variances | `financial_analysis` |
+| Audit or review support, evidence index, missing documents | `audit_preparation` |
+| A tool failure the agent cannot resolve from the response | `error_recovery` (per tool and error code) |
+
+Master data, agent memory, review tasks, documents and custom reports follow their tool descriptions; any QuickBooks write still goes through the `transaction_recording` protocol.
 
 ## Safety model
 
-Every QuickBooks write follows a three-step protocol:
+Every QuickBooks write follows the server's protocol, carried by the `transaction_recording` guide and the tool descriptions:
 
 1. **Lookup**: `qbMasterData` resolves vendor, customer and account IDs.
 2. **Duplicate check**: `qbFetchTransactions` verifies no duplicate exists.
-3. **Decide**: proceed only if the user requested it, a reviewer approved it, or QuickBooks history supports it (the consistency rule); otherwise escalate as a review task. User confirmation is reserved for interrupts: duplicates, amount anomalies, wrong-type guards, voids.
+3. **Decide**: proceed only if the user requested it, a reviewer approved it, or QuickBooks history supports it (the consistency rule); otherwise escalate as a review task with specific reasoning.
 
-In Claude Code the protocol is enforced by prompt-type PreToolUse hooks in `.claude-plugin/hooks.json`. Other hosts follow the same protocol through the skills and the server's own tool guidance. Additional guards:
-
-- Transaction-type guards catch wrong-tool writes (Expense vs BillPayment, Deposit vs ReceivePayment, Invoice vs SalesReceipt)
-- Vendor and account IDs are cross-referenced against the latest `qbMasterData` results to catch invented IDs
-- Journal entries are blocked unless debits equal credits
-- Void operations require fetching and verifying the transaction first
-- Review tasks (`tasks` create) must include specific `aiReasoning`
-
-There is no batch tool. Every transaction is recorded individually with the appropriate tool (`qbExpense`, `qbBill`, and so on), so each write passes through the full protocol.
-
-## Agent memory
-
-The plugin uses `agentMemory` for durable per-client knowledge, never for vendor-to-account mappings, which are inferred in real time from QuickBooks history:
-
-| Type | Purpose | Example |
-|------|---------|---------|
-| `patterns` | Confirmed recurring charges or income seen 2+ times (vendor, amount range, frequency, account) | "AWS monthly invoice about $800 to 6030 Cloud Hosting" |
-| `policies` | Accounting rules: explicit reviewer or client instructions, or agent-observed policies citing QuickBooks evidence | "Capitalize fixed assets over $2,500 (client policy)" |
-| `general` | Lasting client context not available in QuickBooks | "Fiscal year ends March 31" |
-| `system` | Machine-written app state rendered by the portal (hidden from the memory page) | `bootstrap_status`, `latest_forecast` |
-
-### Categorization: real time, not stored
-
-Vendor and customer categorization comes from QuickBooks history at decision time, not from stored mappings. The decide gate proceeds only when one of these holds:
-
-1. The user explicitly requested or confirmed the exact transaction
-2. A reviewer approved it via task (`effectiveCategory` used verbatim)
-3. The **consistency rule** passes on the entity's 6-month history: at least 3 transactions, dominant account at least 70%, no runner-up at 20% or more, amount within 5x the median
-
-Anything else is escalated as a review task; the agent never guesses an account. Because inference is real time, a recategorization made in QuickBooks takes effect on the very next transaction. There is no stale mapping to correct.
+Journal entries must balance, voids require a fetch-and-verify first, and there is no batch tool: every transaction is recorded individually so each write passes through the full protocol. Vendor and customer categorization is inferred from QuickBooks history at decision time, not from stored mappings, so a recategorization in QuickBooks takes effect on the next transaction.
 
 ## Architecture
 
 ```
 Plugin (this repo)
-  skills/                      11 bookkeeping and review preparation skills (all hosts)
+  skills/bookkeeping/SKILL.md  One skill: confirm company, pull the matching getGuide procedure, verify
   .claude-plugin/plugin.json   Claude Code and Grok Build manifest
-  .claude-plugin/hooks.json    Prompt hooks guarding QuickBooks writes (Claude Code)
   .mcp.json                    MCP connector for Claude Code and Grok Build
   .cursor-plugin/plugin.json   Cursor and Grok Bot manifest
   mcp.json                     MCP connector for Cursor
     | Streamable HTTP + OAuth 2.1
 MCP server (hosted at https://mcp.deepledger.ai/mcp)
   27 tools (20 QuickBooks + 7 platform)
-  Tasks, memory, documents, bank feed, custom reports, close runs, workflow guides
+  getGuide procedures, tasks, memory, documents, bank feed, custom reports, close runs
 ```
 
 ## Connecting QuickBooks

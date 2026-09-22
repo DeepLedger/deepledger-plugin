@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0] - 2026-09-21
+
+### Changed
+
+- The plugin is now a thin connector: the hosted MCP server plus a single `bookkeeping` skill. The skill routes each kind of request to the matching `getGuide` procedure (`transaction_recording`, `month_end_closing`, `reconciliation`, `financial_analysis`, `audit_preparation`, `error_recovery`) so procedures update on the server without a plugin release.
+
+### Removed
+
+- The eleven per-area skills (accounts-payable, accounts-receivable, audit-preparation, bank-feed-processing, bank-reconciliation, client-onboarding, financial-analysis, journal-entries, master-data, month-end-close, record-transactions). Their procedures live in the server's guide library.
+- The Claude Code prompt hooks (`.claude-plugin/hooks.json`). The write-safety protocol is enforced by the server's tool guidance and the `getGuide` procedures.
+
 ## [2.3.1] - 2026-09-21
 
 ### Changed

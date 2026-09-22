@@ -1,7 +1,7 @@
 {
   "name": "deepledger",
-  "version": "2.3.1",
-  "description": "AI agent for bookkeeping with QuickBooks Online via DeepLedger: record transactions with duplicate checks and human review, process the bank feed, run financial reports, and prepare the month-end close.",
+  "version": "3.0.0",
+  "description": "Thin connector to DeepLedger's hosted MCP server for QuickBooks Online bookkeeping, plus one skill that pulls the current accounting procedure from the server's getGuide tool.",
   "author": {
     "name": "DeepLedger",
     "url": "https://deepledger.ai"
