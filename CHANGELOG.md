@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.4] - 2026-09-21
+
+### Changed
+
+- README: the network declaration now lists the `/upload-to-qb` attachment path and explains the `curl` upload command `qbAttachFile` returns.
+
 ## [3.1.3] - 2026-09-21
 
 ### Changed

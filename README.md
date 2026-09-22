@@ -98,13 +98,14 @@ On first use the host discovers the server's OAuth 2.1 endpoints (authorization 
 
 ### Network access and credentials
 
-The plugin ships no scripts, binaries, hooks or shell commands. Everything it does goes through the hosted MCP server. The only network endpoints it reaches are:
+The plugin ships no scripts, binaries, hooks or shell commands. Everything it does goes through the hosted MCP server. The one runtime exception is the attachment upload below, where the server returns a shell-quoted `curl` command for the agent to run. The only network endpoints it reaches are:
 
 | Endpoint | Purpose |
 |----------|---------|
 | `https://mcp.deepledger.ai/mcp` | MCP server (Streamable HTTP). All QuickBooks reads and writes, guides, tasks, memory, documents and reports. |
 | `https://mcp.deepledger.ai/.well-known/oauth-authorization-server`, `/oauth/register`, `/oauth/authorize`, `/oauth/token`, `/oauth/revoke` | OAuth 2.1 discovery, dynamic client registration, authorization code with PKCE, token refresh and revocation. |
 | `https://deepledger.ai` | Browser sign-in page opened by the host during authorization. |
+| `https://mcp.deepledger.ai/upload-to-qb` | File attachment upload. `qbAttachFile` returns a `curl` command the agent runs to send one user-chosen local file (10 MB limit) to this path with a one-time token; the server forwards it to QuickBooks. It downloads and executes nothing. |
 
 Credentials: a DeepLedger account (OAuth sign-in in the browser, scope `quickbooks`). The host stores the resulting token; the plugin never sees, stores or transmits Intuit credentials, and it reads no local files, environment variables or secrets. QuickBooks access is scoped to the companies the signed-in user can already open in the DeepLedger portal.
 
