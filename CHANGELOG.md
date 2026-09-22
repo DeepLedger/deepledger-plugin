@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.1.0] - 2026-09-21
+
+### Changed
+
+- Decide gate is confidence-based. The agent records a routine transaction on its own judgment when payee, category, tool and amount are obvious from the evidence, without an explicit user request, and creates a review task only when something is genuinely uncertain. Fixed thresholds (±15-day duplicate window, ≥3 prior transactions, 70% dominant share) are treated as illustrations, not gates. Correctness guards (outstanding bill/invoice dictates the tool, balanced journal entries, fetch-before-void, source ≠ category) are unchanged.
+
 ## [3.0.0] - 2026-09-21
 
 ### Changed

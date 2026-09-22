@@ -66,19 +66,45 @@ description. If that work ends in a QuickBooks write, load
     `codes` and ask again with the closest one.
   - `NO_TOPIC_FOR_GUIDE`, `TOOL_REQUIRED`: fix the arguments and retry.
 
-## 4. Rules that hold whatever the guide says
+## 4. Deciding whether to record
 
-- Look up IDs with `qbMasterData` and check for duplicates with
+You record on your own judgment. A routine write does not need an explicit
+user request or a reviewer's approval; it needs you to be sure.
+
+- **Record** when the payee, the category account, the right tool and the
+  amount are all obvious from the evidence (a clear description, QuickBooks
+  history for this payee, a memory note, the user's words) and you are at
+  least 95% confident. Do not pause to ask.
+- **Create a review task** (`tasks(operation="create")` with specific
+  `aiReasoning` and a `suggestedCategory` if you have one) only when
+  something is genuinely uncertain: a new or ambiguous payee, more than one
+  plausible category, an amount out of character for this payee, a
+  description you cannot read.
+- **Reviewer decisions win.** A task the reviewer approved is recorded with
+  its `effectiveCategory` verbatim before any fresh analysis.
+
+If the guide you loaded states fixed mechanical thresholds for the decide
+gate (a minimum count of prior transactions, a dominant-share percentage, a
+fixed duplicate date window), read them as illustrations of what obvious
+looks like, not as gates. Judge the evidence; pick a duplicate window that
+fits the payee's cadence.
+
+## 5. Guards that hold regardless of confidence
+
+These are QuickBooks correctness, not caution, so they never yield to
+confidence:
+
+- Look up IDs with `qbMasterData` and run a duplicate check with
   `qbFetchTransactions` before any write. Never use an ID the server did not
-  return in this conversation.
-- Write only when the user explicitly requested or confirmed the exact
-  transaction, a reviewer approved it through `tasks`, or QuickBooks history
-  clearly supports the categorization. Otherwise create a review task with
-  specific `aiReasoning` instead of writing.
-- Journal entries must balance. Fetch and verify a transaction before voiding
-  it; voids cannot be undone.
+  return in this conversation. If the duplicate check returns a match, show
+  it and confirm before recording.
+- An outstanding bill means `qbBillPayment`, not a second expense; an
+  outstanding invoice means `qbReceivePayment`, not a deposit or sales
+  receipt. The source account must differ from every line account.
+- Journal entries must balance. Fetch and verify a transaction before
+  voiding it, and confirm voids with the user; they cannot be undone.
 - Report confirmed outcomes and open tasks. A tool call alone is not proof
   that the transaction, attachment or close state was saved; read back an
   uncertain write before retrying.
-- This skill does not expand the user's request, the approval given, or the
-  credential's permissions.
+- This skill does not expand the credential's permissions or the reviewer's
+  decisions.

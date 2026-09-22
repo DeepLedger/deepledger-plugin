@@ -88,9 +88,9 @@ Every QuickBooks write follows the server's protocol, carried by the `transactio
 
 1. **Lookup**: `qbMasterData` resolves vendor, customer and account IDs.
 2. **Duplicate check**: `qbFetchTransactions` verifies no duplicate exists.
-3. **Decide**: proceed only if the user requested it, a reviewer approved it, or QuickBooks history supports it (the consistency rule); otherwise escalate as a review task with specific reasoning.
+3. **Decide**: the agent records when the payee, category, tool and amount are obvious from the evidence and it is confident; it creates a review task with specific reasoning only when something is genuinely uncertain. Reviewer decisions on tasks are applied verbatim.
 
-Journal entries must balance, voids require a fetch-and-verify first, and there is no batch tool: every transaction is recorded individually so each write passes through the full protocol. Vendor and customer categorization is inferred from QuickBooks history at decision time, not from stored mappings, so a recategorization in QuickBooks takes effect on the next transaction.
+Correctness guards do not yield to confidence: an outstanding bill or invoice dictates the tool, journal entries must balance, voids require a fetch-and-verify first, and there is no batch tool: every transaction is recorded individually so each write passes through the full protocol. Vendor and customer categorization is inferred from QuickBooks history at decision time, not from stored mappings, so a recategorization in QuickBooks takes effect on the next transaction.
 
 ## Architecture
 

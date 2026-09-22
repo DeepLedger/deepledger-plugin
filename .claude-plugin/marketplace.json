@@ -10,7 +10,7 @@
     {
       "name": "deepledger",
       "description": "Thin connector to DeepLedger's hosted MCP server for QuickBooks Online bookkeeping, plus one skill that pulls the current accounting procedure from the server's getGuide tool.",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "author": {
         "name": "DeepLedger",
         "email": "support@deepledger.ai"
