@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1] - 2026-09-21
+
+### Added
+
+- `.grok-plugin/plugin.json`, a Grok-native manifest alongside the Claude Code and Cursor ones.
+- README: table of the 27 MCP tools the connector provides, the direct `grok plugin install` command for testing a pinned revision, and a data-handling and support section with the Terms, Privacy Policy and support contact.
+
 ## [3.1.0] - 2026-09-21
 
 ### Changed

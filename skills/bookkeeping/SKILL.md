@@ -1,110 +1,56 @@
 ---
 name: bookkeeping
-description: Bookkeeping for QuickBooks Online through the DeepLedger MCP server. Use for any accounting request — recording payments, bills, invoices, deposits, transfers or journal entries, processing the bank feed, reconciling a statement, closing a month, analyzing financials, preparing audit support, or managing vendors, customers and the chart of accounts. Pulls the current procedure from the server's getGuide tool before acting.
+description: Bookkeeping for QuickBooks Online through DeepLedger MCP. Use for payments, expenses, bills, invoices, deposits, transfers, journal entries, bank feeds, reconciliation, month-end close, financial analysis, audit support, and managing vendors, customers or accounts. Loads current procedures with getGuide before acting.
 ---
 
 # Bookkeeping
 
-DeepLedger keeps its bookkeeping procedures on the server, not in this plugin.
-Your job here is to pull the right procedure with `getGuide`, follow it, and
-verify the outcome. Tool schemas remain the authority for accepted arguments.
-QuickBooks Online is a live system with no sandbox: every write creates,
-changes or voids a real financial record.
+Load current procedures from DeepLedger with `getGuide`, follow them, and verify the result. Use tool schemas for accepted arguments. QuickBooks is live: every write changes real financial records.
 
-## 1. Confirm the company
+## 1. Select the company
 
-One DeepLedger connection reaches every QuickBooks company the user can open.
-Call `qbCompanyProfile` first and say the company name back to the user. If it
-answers `NO_ACTIVE_COMPANY`, call it with `operation: "list"`, then
-`operation: "switch"` with the `organizationId` the user means; never guess
-between similar names. If the user names a different company than the active
-one, switch before doing anything else. Every tool result carries `company`;
-if one carries `warning`, the active company was moved from outside this
-session, so stop and reconfirm before writing.
+Call `qbCompanyProfile` first and tell the user the active company. The connection can access multiple companies:
 
-## 2. Pull the procedure with getGuide
+- If it returns `NO_ACTIVE_COMPANY`, use `operation: "list"`, then `operation: "switch"` with the intended `organizationId`.
+- Switch if the user named a different company. Ask if the intended company is unclear; never guess between similar names.
+- Check each result's `company`. A `warning` means the active company changed outside this session; stop and reconfirm before writing.
 
-Before starting any accounting task, call `getGuide` with the `guideType`
-that matches the request, then follow its `steps`, `safetyChecklist` and
-`commonMistakes`. Do not work from a remembered copy; the published guide is
-the shared procedure for every DeepLedger client and it changes without a
-plugin release.
+## 2. Load the procedure
 
-| The user wants to... | Call |
-|----------------------|------|
-| Record, enter, book or log a payment, purchase, expense, bill, bill payment, sale, invoice, customer payment, refund, credit, deposit, transfer or journal entry; categorize or record bank feed items; any accounts payable or receivable work that writes to QuickBooks | `getGuide(guideType="transaction_recording")` |
-| Close a month, prepare adjusting entries, run the close checklist, draft or update the Close Sheet | `getGuide(guideType="month_end_closing")` |
-| Reconcile a bank or credit-card statement, explain a reconciliation difference, prepare a reconciliation workbook | `getGuide(guideType="reconciliation")` |
-| Compare reports, explain a profit or cash change, compute ratios or trends, analyze budget variances | `getGuide(guideType="financial_analysis")` |
-| Assemble audit or review support: supporting schedules, an evidence index, a missing-document list | `getGuide(guideType="audit_preparation")` |
-| Recover from a tool failure you cannot resolve from its response | `getGuide(guideType="error_recovery", tool="<failed tool>", errorCode="<returned code>")` |
+Call `getGuide(guideType="...")` for the task below. Fetch the current guide each time; do not rely on a remembered copy. Follow its `steps`, `safetyChecklist` and `commonMistakes`, with the routine-recording policy in section 3.
 
-Requests with no dedicated guide (looking up or editing vendors, customers,
-accounts, items and classes with `qbMasterData`; agent memory; review tasks;
-documents; custom reports; onboarding a new client) follow the tool's own
-description. If that work ends in a QuickBooks write, load
-`transaction_recording` first; its protocol applies to every write.
+| Task | `guideType` |
+|------|-------------|
+| Record transactions, categorize bank feeds, or write to accounts payable or receivable | `transaction_recording` |
+| Close a month, prepare adjustments, or draft/update the Close Sheet | `month_end_closing` |
+| Reconcile bank/credit-card statements, investigate differences, or prepare a reconciliation workbook | `reconciliation` |
+| Compare reports, explain financial changes, or analyze ratios, trends and budgets | `financial_analysis` |
+| Prepare audit/review schedules, evidence indexes or missing-document lists | `audit_preparation` |
 
-## 3. Read the result
+For master data, memory, review tasks, documents, custom reports and onboarding, follow the tool description. Load `transaction_recording` before any QuickBooks write, including writes within another workflow.
 
-- Workflow guides answer in `steps`, `safetyChecklist` and `commonMistakes`
-  and carry no `content`.
-- `error_recovery` answers in `content` (markdown) plus `codes` (every error
-  code the playbook covers), `recovery` (matched actions with verification
-  and stop conditions) and `topics` (narrative sections readable with
-  `topic`). Pass `errorCode` to get one entry instead of the whole playbook;
-  a pre-flight refusal with no code can be looked up by pasting its message.
-- On `success: false`, branch on `errorCode`, never on the message:
-  - `GUIDE_NOT_AVAILABLE`: the guide is missing or in draft. This is not an
-    empty checklist. Tell the user the procedure is unavailable and hand off
-    work that depends on it. Do not invent the procedure.
-  - `GUIDE_FETCH_FAILED`: storage read failed. Retry once; if it persists,
-    treat it like `GUIDE_NOT_AVAILABLE`.
-  - `NO_GUIDE_FOR_TOOL`: no playbook for that tool; the summary lists the
-    tools that have one.
-  - `NO_ENTRY_FOR_CODE`: the playbook loaded but has no such code. Read
-    `codes` and ask again with the closest one.
-  - `NO_TOPIC_FOR_GUIDE`, `TOOL_REQUIRED`: fix the arguments and retry.
+For an unresolved tool failure, call `getGuide(guideType="error_recovery", tool="<failed tool>", errorCode="<returned code>")`. If no code was returned, pass the refusal message as `errorCode`. Read `content` and `recovery`, including verification and stop conditions; use `codes` or `topics` to narrow further requests.
 
-## 4. Deciding whether to record
+If `getGuide` returns `success: false`, use `errorCode`:
 
-You record on your own judgment. A routine write does not need an explicit
-user request or a reviewer's approval; it needs you to be sure.
+- `GUIDE_FETCH_FAILED`: retry once. If it persists, handle as `GUIDE_NOT_AVAILABLE`.
+- `GUIDE_NOT_AVAILABLE`: explain that the procedure is unavailable and hand off dependent work; do not invent a replacement.
+- `NO_GUIDE_FOR_TOOL`: consult the response's list of supported tools.
+- `NO_ENTRY_FOR_CODE`: inspect `codes` and request a relevant entry.
+- `NO_TOPIC_FOR_GUIDE` or `TOOL_REQUIRED`: correct the arguments and retry.
 
-- **Record** when the payee, the category account, the right tool and the
-  amount are all obvious from the evidence (a clear description, QuickBooks
-  history for this payee, a memory note, the user's words) and you are at
-  least 95% confident. Do not pause to ask.
-- **Create a review task** (`tasks(operation="create")` with specific
-  `aiReasoning` and a `suggestedCategory` if you have one) only when
-  something is genuinely uncertain: a new or ambiguous payee, more than one
-  plausible category, an amount out of character for this payee, a
-  description you cannot read.
-- **Reviewer decisions win.** A task the reviewer approved is recorded with
-  its `effectiveCategory` verbatim before any fresh analysis.
+## 3. Decide whether to record
 
-If the guide you loaded states fixed mechanical thresholds for the decide
-gate (a minimum count of prior transactions, a dominant-share percentage, a
-fixed duplicate date window), read them as illustrations of what obvious
-looks like, not as gates. Judge the evidence; pick a duplicate window that
-fits the payee's cadence.
+- **Record routine transactions within the user's requested scope** when the payee, category account, tool and amount are clear from the evidence and you are at least 95% confident. Evidence can include the description, QuickBooks history, memory or the user's instructions.
+- **Create a review task** with `tasks(operation="create")` when something is uncertain, such as a new or ambiguous payee, multiple plausible categories, an unusual amount or an unreadable description. Include specific `aiReasoning` and a `suggestedCategory` when available.
+- **Apply reviewer decisions first.** Record approved tasks using `effectiveCategory` verbatim before fresh analysis.
 
-## 5. Guards that hold regardless of confidence
+For routine recording, treat guide thresholds for history counts, category share and duplicate date windows as examples, not mandatory gates. Judge the evidence and use a duplicate window suited to the payee's cadence. The checks below still apply regardless of confidence.
 
-These are QuickBooks correctness, not caution, so they never yield to
-confidence:
+## 4. Check and verify every write
 
-- Look up IDs with `qbMasterData` and run a duplicate check with
-  `qbFetchTransactions` before any write. Never use an ID the server did not
-  return in this conversation. If the duplicate check returns a match, show
-  it and confirm before recording.
-- An outstanding bill means `qbBillPayment`, not a second expense; an
-  outstanding invoice means `qbReceivePayment`, not a deposit or sales
-  receipt. The source account must differ from every line account.
-- Journal entries must balance. Fetch and verify a transaction before
-  voiding it, and confirm voids with the user; they cannot be undone.
-- Report confirmed outcomes and open tasks. A tool call alone is not proof
-  that the transaction, attachment or close state was saved; read back an
-  uncertain write before retrying.
-- This skill does not expand the credential's permissions or the reviewer's
-  decisions.
+- Resolve IDs with `qbMasterData` and check duplicates with `qbFetchTransactions` before writing. Use only IDs returned by the server in this conversation. Show any duplicate match and obtain confirmation before recording.
+- Pay an outstanding bill with `qbBillPayment`; collect an outstanding invoice with `qbReceivePayment`. Do not create a second expense, deposit or sales receipt instead. The source account must differ from every line account.
+- Balance journal entries. Before voiding a transaction, fetch it, verify it and obtain user confirmation; voids cannot be undone.
+- Verify saved outcomes. Read back an uncertain write before retrying to avoid duplicates. Report confirmed results and open tasks, including whether transactions, attachments and close states were saved.
+- Stay within credential permissions and reviewer decisions.

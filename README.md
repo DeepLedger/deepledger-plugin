@@ -34,7 +34,15 @@ ln -s "$(pwd)/deepledger-plugin" ~/.cursor/plugins/local/deepledger
 
 ### Grok Build
 
-DeepLedger is listed in the [xAI plugin marketplace](https://github.com/xai-org/plugin-marketplace) as a remote source pinned to a commit of this repository. Inside Grok Build open the extensions modal with `/plugins` (or browse with `/marketplace`), select DeepLedger and install it. Grok Build reads the Claude Code manifest, skill and `.mcp.json` directly. Local development: `grok --plugin-dir ./deepledger-plugin`.
+DeepLedger is listed in the [xAI plugin marketplace](https://github.com/xai-org/plugin-marketplace) as a remote source pinned to a commit of this repository. Inside Grok Build open the extensions modal with `/plugins` (or browse with `/marketplace`), select DeepLedger and install it. Grok Build reads the `.grok-plugin/plugin.json` manifest, the skill and `.mcp.json` directly. Enable and trust the plugin so Grok can connect to the bundled MCP server; the first DeepLedger tool call opens the browser sign-in, and `/mcps` shows the connection.
+
+To test before marketplace approval, install a pinned revision straight from GitHub:
+
+```bash
+grok plugin install DeepLedger/deepledger-plugin@<full-commit-sha> --trust
+```
+
+Local development: `grok --plugin-dir ./deepledger-plugin`.
 
 ### Grok Bot
 
@@ -82,6 +90,40 @@ The `bookkeeping` skill activates on any accounting request. It confirms the act
 
 Master data, agent memory, review tasks, documents and custom reports follow their tool descriptions; any QuickBooks write still goes through the `transaction_recording` protocol.
 
+## What the connector provides
+
+The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It installs no local binary. The server exposes 27 tools; every one operates on the active QuickBooks company and names it in its result.
+
+| Tool | Capability |
+|------|------------|
+| `qbCompanyProfile` | Show, list or switch the active QuickBooks company |
+| `qbMasterData` | Look up, create or update accounts, vendors, customers, items, classes and tax codes |
+| `qbFetchTransactions` | Fetch transactions for duplicate checks, payee history and outstanding bills or invoices |
+| `qbExpense` | Record or update a purchase paid now (card, ACH, check, cash) |
+| `qbBill` | Record or update a vendor bill to pay later |
+| `qbBillPayment` | Pay outstanding bills, applying vendor credits |
+| `qbInvoice` | Create or update a customer invoice |
+| `qbReceivePayment` | Apply a customer payment to outstanding invoices |
+| `qbSalesReceipt` | Record a sale paid on the spot |
+| `qbDeposit` | Record a bank deposit, batching held payments or direct income lines |
+| `qbTransfer` | Move money between the company's own accounts |
+| `qbRefundReceipt` | Refund a customer |
+| `qbCredit` | Record a vendor or customer credit |
+| `qbJournalEntry` | Record a balanced journal entry |
+| `qbEstimate` | Create, update or convert an estimate |
+| `qbRecurringTransaction` | Manage recurring transaction templates |
+| `qbVoidTransaction` | Void an invoice, sales receipt, refund receipt, payment or bill payment |
+| `qbAttachFile` | Attach a receipt or document to a QuickBooks record |
+| `qbSendEmail` | Email a sales document to the customer through QuickBooks |
+| `qbReports` | Run profit and loss, balance sheet, aging and other QuickBooks reports |
+| `getGuide` | Load the current bookkeeping procedure or a per-tool error playbook |
+| `tasks` | Review tasks shared between the agent and the human reviewer |
+| `agentMemory` | Read and maintain durable per-company knowledge |
+| `bankFeed` | Fetch unrecorded bank transactions and stamp them once recorded |
+| `documents` | Read documents from DeepLedger storage or QuickBooks attachments |
+| `customReports` | Run saved report definitions by name |
+| `closeRun` | Track the month-end close and its Close Sheet |
+
 ## Safety model
 
 Every QuickBooks write follows the server's protocol, carried by the `transaction_recording` guide and the tool descriptions:
@@ -97,7 +139,8 @@ Correctness guards do not yield to confidence: an outstanding bill or invoice di
 ```
 Plugin (this repo)
   skills/bookkeeping/SKILL.md  One skill: confirm company, pull the matching getGuide procedure, verify
-  .claude-plugin/plugin.json   Claude Code and Grok Build manifest
+  .grok-plugin/plugin.json     Grok Build manifest
+  .claude-plugin/plugin.json   Claude Code manifest
   .mcp.json                    MCP connector for Claude Code and Grok Build
   .cursor-plugin/plugin.json   Cursor and Grok Bot manifest
   mcp.json                     MCP connector for Cursor
@@ -113,6 +156,12 @@ MCP server (hosted at https://mcp.deepledger.ai/mcp)
 2. Open Settings, QuickBooks
 3. Click Connect QuickBooks and authorize access
 4. Once connected, the plugin can read and write to that company
+
+## Data handling and support
+
+- Data returned by DeepLedger and QuickBooks is processed in your host session and is subject to the [DeepLedger Terms](https://deepledger.ai/terms) and [Privacy Policy](https://deepledger.ai/privacy).
+- Writes go to a live QuickBooks Online company. Review the agent's proposed transaction before approving anything consequential; voids cannot be undone.
+- Support: [support@deepledger.ai](mailto:support@deepledger.ai). Plugin issues: [GitHub issues](https://github.com/DeepLedger/deepledger-plugin/issues).
 
 ## Version and license
 

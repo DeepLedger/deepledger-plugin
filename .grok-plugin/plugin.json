@@ -11,12 +11,9 @@
   "license": "MIT",
   "keywords": [
     "deepledger",
-    "quickbooks",
-    "bookkeeping",
-    "accounting",
-    "month-end close"
+    "deepledger quickbooks",
+    "deepledger bookkeeping",
+    "deepledger mcp"
   ],
-  "logo": "assets/logo.svg",
-  "skills": "./skills",
-  "mcpServers": "./mcp.json"
+  "logo": "assets/logo.svg"
 }
