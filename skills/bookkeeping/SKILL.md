@@ -50,7 +50,7 @@ For routine recording, treat guide thresholds for history counts, category share
 ## 4. Check and verify every write
 
 - Resolve IDs with `qbMasterData` and check duplicates with `qbFetchTransactions` before writing. Use only IDs returned by the server in this conversation. Show any duplicate match and obtain confirmation before recording.
-- Pay an outstanding bill with `qbBillPayment`; collect an outstanding invoice with `qbReceivePayment`. Do not create a second expense, deposit or sales receipt instead. The source account must differ from every line account.
+- Pay an outstanding bill with `qbPayment` (side `vendor`); collect an outstanding invoice with `qbPayment` (side `customer`). Do not create a second expense, deposit or sales receipt instead. The source account must differ from every line account.
 - Balance journal entries. Before voiding a transaction, fetch it, verify it and obtain user confirmation; voids cannot be undone.
 - Verify saved outcomes. Read back an uncertain write before retrying to avoid duplicates. Report confirmed results and open tasks, including whether transactions, attachments and close states were saved.
 - Stay within credential permissions and reviewer decisions.

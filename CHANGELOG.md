@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.5] - 2026-10-05
+
+### Changed
+
+- The server now exposes 26 tools. `qbPayment` replaces `qbBillPayment` and `qbReceivePayment` (`side` customer | vendor); `qbSalesReceipt` also records refunds (`type` refundReceipt, replacing `qbRefundReceipt`); `documents` (operation `upload`) replaces `qbAttachFile`; `qbCustomization` replaces `qbCustomField` and `qbDimension`; feedback is an operation of `qbCompanyProfile`. `qbProject` added to the tool table.
+- README network declaration and the bookkeeping skill name the new tools.
+
 ## [3.1.4] - 2026-09-21
 
 ### Changed
