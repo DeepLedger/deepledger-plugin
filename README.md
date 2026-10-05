@@ -105,7 +105,7 @@ The plugin ships no scripts, binaries, hooks or shell commands. Everything it do
 | `https://mcp.deepledger.ai/mcp` | MCP server (Streamable HTTP). All QuickBooks reads and writes, guides, tasks, memory, documents and reports. |
 | `https://mcp.deepledger.ai/.well-known/oauth-authorization-server`, `/oauth/register`, `/oauth/authorize`, `/oauth/token`, `/oauth/revoke` | OAuth 2.1 discovery, dynamic client registration, authorization code with PKCE, token refresh and revocation. |
 | `https://deepledger.ai` | Browser sign-in page opened by the host during authorization. |
-| `https://mcp.deepledger.ai/upload-to-qb` | File attachment upload. `qbAttachFile` returns a `curl` command the agent runs to send one user-chosen local file (10 MB limit) to this path with a one-time token; the server forwards it to QuickBooks. It downloads and executes nothing. |
+| `https://mcp.deepledger.ai/upload-to-qb` | File attachment upload. `documents` (operation `upload`) returns a `curl` command the agent runs to send one user-chosen local file (10 MB limit) to this path with a one-time token; the server forwards it to QuickBooks. It downloads and executes nothing. |
 
 Credentials: a DeepLedger account (OAuth sign-in in the browser, scope `quickbooks`). The host stores the resulting token; the plugin never sees, stores or transmits Intuit credentials, and it reads no local files, environment variables or secrets. QuickBooks access is scoped to the companies the signed-in user can already open in the DeepLedger portal.
 
@@ -126,7 +126,7 @@ Master data, agent memory, review tasks, documents and custom reports follow the
 
 ## What the connector provides
 
-The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It installs no local binary. The server exposes 27 tools; every one operates on the active QuickBooks company and names it in its result.
+The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It installs no local binary. The server exposes 26 tools; every one operates on the active QuickBooks company and names it in its result.
 
 | Tool | Capability |
 |------|------------|
@@ -135,26 +135,25 @@ The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It 
 | `qbFetchTransactions` | Fetch transactions for duplicate checks, payee history and outstanding bills or invoices |
 | `qbExpense` | Record or update a purchase paid now (card, ACH, check, cash) |
 | `qbBill` | Record or update a vendor bill to pay later |
-| `qbBillPayment` | Pay outstanding bills, applying vendor credits |
+| `qbPayment` | Apply a customer payment to outstanding invoices, or pay outstanding bills applying vendor credits |
 | `qbInvoice` | Create or update a customer invoice |
-| `qbReceivePayment` | Apply a customer payment to outstanding invoices |
-| `qbSalesReceipt` | Record a sale paid on the spot |
+| `qbSalesReceipt` | Record a sale paid on the spot, or refund a customer |
 | `qbDeposit` | Record a bank deposit, batching held payments or direct income lines |
 | `qbTransfer` | Move money between the company's own accounts |
-| `qbRefundReceipt` | Refund a customer |
 | `qbCredit` | Record a vendor or customer credit |
 | `qbJournalEntry` | Record a balanced journal entry |
 | `qbEstimate` | Create, update or convert an estimate |
 | `qbRecurringTransaction` | Manage recurring transaction templates |
+| `qbProject` | List, create, update and close QuickBooks projects |
+| `qbCustomization` | Manage custom field definitions and transaction dimensions |
 | `qbVoidTransaction` | Void an invoice, sales receipt, refund receipt, payment or bill payment |
-| `qbAttachFile` | Attach a receipt or document to a QuickBooks record |
 | `qbSendEmail` | Email a sales document to the customer through QuickBooks |
 | `qbReports` | Run profit and loss, balance sheet, aging and other QuickBooks reports |
 | `getGuide` | Load the current bookkeeping procedure or a per-tool error playbook |
 | `tasks` | Review tasks shared between the agent and the human reviewer |
 | `agentMemory` | Read and maintain durable per-company knowledge |
 | `bankFeed` | Fetch unrecorded bank transactions and stamp them once recorded |
-| `documents` | Read documents from DeepLedger storage or QuickBooks attachments |
+| `documents` | Read documents from DeepLedger storage or QuickBooks attachments, and upload a file to a QuickBooks record |
 | `customReports` | Run saved report definitions by name |
 | `closeRun` | Track the month-end close and its Close Sheet |
 
@@ -180,7 +179,7 @@ Plugin (this repo)
   mcp.json                     MCP connector for Cursor
     | Streamable HTTP + OAuth 2.1
 MCP server (hosted at https://mcp.deepledger.ai/mcp)
-  27 tools (20 QuickBooks + 7 platform)
+  26 tools (19 QuickBooks + 7 platform)
   getGuide procedures, tasks, memory, documents, bank feed, custom reports, close runs
 ```
 
