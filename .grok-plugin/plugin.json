@@ -1,7 +1,7 @@
 {
   "name": "deepledger",
-  "version": "3.1.5",
-  "description": "DeepLedger connects QuickBooks to Grok, ChatGPT, Claude and other AI agents, allowing businesses to record bills, invoices, payments, deposits, journal entries and other transactions, run financial reports, manage receivables and payables, and track month-end close using natural language.",
+  "version": "4.0.0",
+  "description": "DeepLedger connects QuickBooks Online, Xero (beta), Bill.com and Stripe (for reporting) to Claude, ChatGPT, Cursor, Grok and other AI agents through one MCP address. Record bills, invoices, payments, journal entries and other transactions, run reports, reconcile and close the month across every company you manage, with your firm's rules, review tasks and audit history built in.",
   "author": {
     "name": "DeepLedger",
     "url": "https://deepledger.ai"
@@ -12,6 +12,7 @@
   "keywords": [
     "deepledger",
     "deepledger quickbooks",
+    "deepledger xero",
     "deepledger bookkeeping",
     "deepledger mcp"
   ],
