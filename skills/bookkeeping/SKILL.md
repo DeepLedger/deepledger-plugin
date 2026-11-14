@@ -29,7 +29,7 @@ Call `skills(operation="list")` to see the company's skills, then `skills(operat
 | Prepare audit or review schedules, evidence indexes or missing-document lists | `audit-preparation` |
 | First-time setup of a company | `get-started` |
 
-Use the names `list` returns; they can differ by company. For a job with no matching skill, follow the tool descriptions. Read the recording skill before any write to the books, including writes within another workflow. Facts about the company (policies, recurring patterns, reviewer corrections) live in `agentMemory`, the company's AI Brain: read it before you categorize.
+Use the names `list` returns; they can differ by company. If `list` returns no skills, or no skill matches the job (financial analysis, for example), follow the message it returns and the tool descriptions. Read the recording skill before any write to the books, including writes within another workflow. Facts about the company (policies, recurring patterns, reviewer corrections) live in `agentMemory`, the company's AI Brain: read it before you categorize.
 
 For an unresolved tool failure, call `skills(operation="errors", tool="<failed tool>", errorCode="<returned code>")`. If no code was returned, pass the refusal message as `errorCode`. Follow the recovery steps, including verification and stop conditions.
 
@@ -37,7 +37,7 @@ For an unresolved tool failure, call `skills(operation="errors", tool="<failed t
 
 - **Record routine transactions within the user's requested scope** when the payee, category account, tool and amount are clear from the evidence and you are confident. Evidence can include the description, ledger history, the AI Brain or the user's instructions.
 - **Create a review task** with `tasks(operation="create")` when something is uncertain, such as a new or ambiguous payee, several plausible categories, an unusual amount or an unreadable description. Include specific reasoning and a suggested category when you have one.
-- **Apply reviewer decisions first.** Record approved tasks as the reviewer decided before fresh analysis.
+- **Apply reviewer decisions first.** Record approved tasks using the task's `effectiveCategory` verbatim before fresh analysis.
 
 ## 4. Check and verify every write
 

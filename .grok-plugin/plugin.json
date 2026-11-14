@@ -13,6 +13,8 @@
     "deepledger",
     "deepledger quickbooks",
     "deepledger xero",
+    "deepledger bill-com",
+    "deepledger stripe",
     "deepledger bookkeeping",
     "deepledger mcp"
   ],

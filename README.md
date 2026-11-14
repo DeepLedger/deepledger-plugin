@@ -17,13 +17,13 @@ The ledger stays the record. DeepLedger holds the connections your company autho
 | Bill.com | Read bills, invoices, vendor credits, credit memos, payments, aging, vendors, customers and accounts; save drafts and edit vendors, customers, bills and open invoices. It never pays, approves or sends anything in BILL |
 | Stripe (for reporting) | Read only: balance, payouts, charges, refunds, disputes, invoices, customers and subscriptions. It never refunds, pays or changes anything in Stripe |
 
-A company's books are on QuickBooks Online or Xero. Bill.com and Stripe connect next to the ledger, on the company's Connections tab in the DeepLedger portal.
+A company's books are on QuickBooks Online or Xero (beta). Bill.com and Stripe connect next to the ledger, on the company's Connections tab in the DeepLedger portal.
 
 ## Who it is for
 
 - **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on either ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached.
 - **In-house finance teams** running several companies or entities, who want the month-end close, reconciliation prep and management reports drafted for review.
-- **Small business owners** who keep their own books in QuickBooks Online or Xero and want the routine entries, categorization and reports done for them.
+- **Small business owners** who keep their own books in QuickBooks Online or Xero (beta) and want the routine entries, categorization and reports done for them.
 
 ## What it does
 
@@ -41,7 +41,7 @@ A company's books are on QuickBooks Online or Xero. Bill.com and Stripe connect 
 
 ## How to use it
 
-1. **Connect your companies** at [deepledger.ai](https://deepledger.ai): each company's QuickBooks Online or Xero books, then Bill.com or Stripe on its Connections tab if you use them.
+1. **Connect your companies** at [deepledger.ai](https://deepledger.ai): each company's QuickBooks Online or Xero (beta) books, then Bill.com or Stripe on its Connections tab if you use them.
 2. **Install the plugin** in your host (below) and sign in when the browser opens.
 3. **Ask in plain language.** The `bookkeeping` skill activates on any accounting request:
 
@@ -62,7 +62,7 @@ The plugin itself is thin: a connector to DeepLedger's hosted MCP server and one
 
 ## Prerequisites
 
-- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai) (QuickBooks Online or Xero)
+- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai) (QuickBooks Online or Xero (beta))
 - One of the hosts below
 
 ## Install
@@ -104,7 +104,10 @@ Local development: `grok --plugin-dir ./deepledger-plugin`.
 
 ### Grok chat and Grok Bot
 
-Add the DeepLedger MCP server as a custom connector with the address `https://mcp.deepledger.ai/mcp`, then sign in. Steps: [Connect Grok and Grok Bot](https://deepledger.ai/blog/connect-grok-to-quickbooks).
+These do not use this plugin; they connect to the same MCP address directly. Steps for both: [Connect Grok and Grok Bot](https://deepledger.ai/blog/connect-grok-to-quickbooks).
+
+- **Grok chat:** open grok.com/connectors, choose New Connector, then Custom, paste `https://mcp.deepledger.ai/mcp` and sign in with your DeepLedger account.
+- **Grok Bot:** DeepLedger is not in the Grok Bot plugin catalog. In a Grok Bot chat, ask it to add DeepLedger as a custom MCP server at `https://mcp.deepledger.ai/mcp`, then complete the sign-in.
 
 ### Sign-in
 
