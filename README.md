@@ -62,7 +62,7 @@ The plugin itself is thin: a connector to DeepLedger's hosted MCP server and one
 
 ## Prerequisites
 
-- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai) (QuickBooks Online or Xero (beta))
+- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai), on QuickBooks Online or Xero (beta)
 - One of the hosts below
 
 ## Install
