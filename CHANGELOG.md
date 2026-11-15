@@ -1,5 +1,12 @@
 # Changelog
 
+## [4.0.1] - 2026-11-15
+
+### Changed
+
+- Xero is no longer marked beta: "(beta)" after Xero is removed from the manifests, the marketplace entry, the README and the skill.
+- QuickBooks Desktop (beta) is listed as a supported ledger: the README's app table and a tool table for its 13 `qbdesktop*` tools, and the skill names `qbdesktopMasterData`, `qbdesktopFetchTransactions` and `qbdesktopPayments` for lookups, duplicate checks and payments, how its pending reads behave, and its write protocol: a dry run and the user's confirmation before each write, `pending` checked with `qbdesktopSync`, never re-sent (`skills`, `agentMemory` and review tasks are not available on a Desktop company yet).
+
 ## [4.0.0] - 2026-11-14
 
 ### Changed
