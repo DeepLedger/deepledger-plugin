@@ -6,14 +6,14 @@ DeepLedger connects QuickBooks Online, QuickBooks Desktop (beta), Xero, Bill.com
 
 This repository packages DeepLedger as a plugin for Claude Code, Cursor and Grok Build. Install it, sign in with your DeepLedger account, and ask for bookkeeping in plain language. The AI agent works the active company the way a staff accountant would: it looks up the payee, checks for duplicates, picks the right transaction type, records it, and hands anything it is not sure about to a human reviewer instead of guessing.
 
-The ledger stays the record. DeepLedger holds the connections your company authorized (QuickBooks through Intuit's own OAuth flow, Xero through Xero's own sign-in, Bill.com with your own BILL credentials, Stripe through Stripe's official MCP), so the plugin never sees those credentials. One sign-in reaches every company you can open in the DeepLedger portal.
+The ledger stays the record. DeepLedger holds the connections your company authorized (QuickBooks through Intuit's own OAuth flow, Xero through Xero's own sign-in, QuickBooks Desktop through the QuickBooks Web Connector on your own machine, Bill.com with your own BILL credentials, Stripe through Stripe's official MCP), so the plugin never sees those credentials. One sign-in reaches every company you can open in the DeepLedger portal.
 
 ## What it connects
 
 | App | What the AI agent can do |
 |-----|--------------------------|
 | QuickBooks Online | Read and write: transactions, master data, reports, projects, custom fields, recurring templates, bank feed, attachments |
-| QuickBooks Desktop (beta) | QuickBooks Desktop Enterprise company files, through the QuickBooks Web Connector on the client's Windows machine: lists, transactions and reports, and writes such as bills, invoices, payments, journal entries and inventory adjustments. Reads of transactions and reports, and every write, need that machine on and connected |
+| QuickBooks Desktop (beta) | QuickBooks Desktop Enterprise (US edition) company files, through the QuickBooks Web Connector on the client's Windows machine. Reads lists, transactions and reports; read only for now. Its write tools (bills, invoices, payments, journal entries and more) refuse and change nothing until writing is switched on. Transactions and reports need that machine on and connected |
 | Xero | Read and write: invoices, bills, credit notes, payments, spend and receive money, transfers, manual journals, quotes, repeating invoices, tracking categories, reports. New invoices, bills, credit notes and journals are saved as drafts by default |
 | Bill.com | Read bills, invoices, vendor credits, credit memos, payments, aging, vendors, customers and accounts; save drafts and edit vendors, customers, bills and open invoices. It never pays, approves or sends anything in BILL |
 | Stripe (for reporting) | Read only: balance, payouts, charges, refunds, disputes, invoices, customers and subscriptions. It never refunds, pays or changes anything in Stripe |
@@ -22,7 +22,7 @@ A company's books are on QuickBooks Online, QuickBooks Desktop or Xero. Bill.com
 
 ## Who it is for
 
-- **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on either ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached.
+- **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on any ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached.
 - **In-house finance teams** running several companies or entities, who want the month-end close, reconciliation prep and management reports drafted for review.
 - **Small business owners** who keep their own books in QuickBooks Online, QuickBooks Desktop or Xero and want the routine entries, categorization and reports done for them.
 
@@ -145,13 +145,13 @@ Each company starts from DeepLedger's default skills and can keep its own prefer
 
 ## What the connector provides
 
-The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It installs no local binary. Every signed-in user gets the DeepLedger tools; each app's own tools are listed for users whose companies have that app connected. Every tool that touches the books operates on the active company and names it in its result.
+The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It installs no local binary. Signed-in users get the DeepLedger tools (a user whose companies are all on QuickBooks Desktop gets a shorter set: `companies`, `connections`, `describeTool`, `callReadTool`, `callWriteTool` and `tasks`); each app's own tools are listed for users whose companies have that app connected. Every tool that touches the books operates on the active company and names it in its result.
 
 **DeepLedger (every user)**
 
 | Tool | Capability |
 |------|------------|
-| `companies` | Show, list or switch the active company on either ledger; send feedback to DeepLedger |
+| `companies` | Show, list or switch the active company on any ledger; send feedback to DeepLedger |
 | `connections` | Which apps each company has connected, which need a reconnect, and each app's tools |
 | `dashboard` | Read-only dashboard numbers across companies: firm summary, company overview, close board |
 | `describeTool` | Full description and input schema of any connected app's tool |
@@ -194,7 +194,7 @@ The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It 
 
 **QuickBooks Desktop (beta)**
 
-Listed for users whose companies are all on QuickBooks Desktop; next to QuickBooks Online or Xero companies, reach them through `describeTool` and `callReadTool` / `callWriteTool`.
+Listed for users whose companies are all on QuickBooks Desktop; next to QuickBooks Online or Xero companies, reach them through `describeTool` and `callReadTool` / `callWriteTool`. Read only for now: the write tools below refuse and change nothing until writing is switched on.
 
 | Tool | Capability |
 |------|------------|
