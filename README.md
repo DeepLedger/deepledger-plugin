@@ -13,7 +13,7 @@ The ledger stays the record. DeepLedger holds the connections your company autho
 | App | What the AI agent can do |
 |-----|--------------------------|
 | QuickBooks Online | Read and write: transactions, master data, reports, projects, custom fields, recurring templates, bank feed, attachments |
-| QuickBooks Desktop (beta) | QuickBooks Desktop Enterprise (US edition) company files, through the QuickBooks Web Connector on the client's Windows machine. Read and write: lists, transactions and reports; create or update list records, bills, vendor credits, purchase orders, item receipts, checks, card charges and credits, invoices, sales receipts, credit memos, estimates, sales orders, statement charges, received payments, bill payments, deposits, journal entries, inventory adjustments, builds and stock transfers, time and mileage, and custom fields; void or delete a transaction; delete, merge or inactivate a list record. The AI agent is instructed to run each write as a dry run and ask you to confirm before it is sent. Transactions, reports and every write need that machine on and connected |
+| QuickBooks Desktop (beta) | QuickBooks Desktop Enterprise (US edition) company files, through the QuickBooks Web Connector on the client's Windows machine. Read and write: lists, transactions and reports; create or update list records (not employees), bills, vendor credits, purchase orders, item receipts, checks, card charges and credits, invoices, sales receipts, credit memos, estimates, sales orders, statement charges, received payments, bill payments, deposits, journal entries, inventory adjustments, builds and stock transfers, time and mileage, and custom fields; void or delete a transaction; delete, merge or inactivate a list record. The AI agent is instructed to run each write as a dry run and ask you to confirm before it is sent. Transactions, reports and every write need that machine on and connected |
 | Xero | Read and write: invoices, bills, credit notes, payments, spend and receive money, transfers, manual journals, quotes, repeating invoices, tracking categories, reports. New invoices, bills, credit notes and journals are saved as drafts by default |
 | Bill.com | Read bills, invoices, vendor credits, credit memos, payments, aging, vendors, customers and accounts; save drafts and edit vendors, customers, bills and open invoices. It never pays, approves or sends anything in BILL |
 | Stripe (for reporting) | Read only: balance, payouts, charges, refunds, disputes, invoices, customers and subscriptions. It never refunds, pays or changes anything in Stripe |
@@ -22,7 +22,7 @@ A company's books are on QuickBooks Online, QuickBooks Desktop or Xero. Bill.com
 
 ## Who it is for
 
-- **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on any ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached.
+- **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on any ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached (on QuickBooks Desktop companies the agent asks you instead, for now).
 - **In-house finance teams** running several companies or entities, who want the month-end close, reconciliation prep and management reports drafted for review.
 - **Small business owners** who keep their own books in QuickBooks Online, QuickBooks Desktop or Xero and want the routine entries, categorization and reports done for them.
 
@@ -199,7 +199,7 @@ Listed for users whose companies are all on QuickBooks Desktop; next to QuickBoo
 | Tool | Capability |
 |------|------------|
 | `qbdesktopCompany` | The connected company file: name, fiscal year, features switched on |
-| `qbdesktopMasterData` | Look up every list (accounts, customers and jobs, vendors, items, classes and the reference lists); create or update list records |
+| `qbdesktopMasterData` | Look up every list (accounts, customers and jobs, vendors, items, classes and the reference lists); create or update list records (not employees) |
 | `qbdesktopFetchTransactions` | Read every kind of transaction live from QuickBooks |
 | `qbdesktopReports` | Profit and loss, balance sheet, trial balance, general ledger, aging and other QuickBooks Desktop reports |
 | `qbdesktopSync` | How current the copy of the lists is; refresh it |
