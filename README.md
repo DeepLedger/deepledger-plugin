@@ -2,7 +2,7 @@
 
 **The accounting harness for AI**
 
-DeepLedger connects QuickBooks Online, Xero (beta), Bill.com and Stripe (for reporting) to Claude, ChatGPT, Cursor, Grok and other AI agents through one MCP address. Record bills, invoices, payments, journal entries and other transactions, run reports, reconcile and close the month across every company you manage, with your firm's rules, review tasks and audit history built in.
+DeepLedger connects QuickBooks Online, QuickBooks Desktop (beta), Xero, Bill.com and Stripe (for reporting) to Claude, ChatGPT, Cursor, Grok and other AI agents through one MCP address. Record bills, invoices, payments, journal entries and other transactions, run reports, reconcile and close the month across every company you manage, with your firm's rules, review tasks and audit history built in.
 
 This repository packages DeepLedger as a plugin for Claude Code, Cursor and Grok Build. Install it, sign in with your DeepLedger account, and ask for bookkeeping in plain language. The AI agent works the active company the way a staff accountant would: it looks up the payee, checks for duplicates, picks the right transaction type, records it, and hands anything it is not sure about to a human reviewer instead of guessing.
 
@@ -13,17 +13,18 @@ The ledger stays the record. DeepLedger holds the connections your company autho
 | App | What the AI agent can do |
 |-----|--------------------------|
 | QuickBooks Online | Read and write: transactions, master data, reports, projects, custom fields, recurring templates, bank feed, attachments |
-| Xero (beta) | Read and write: invoices, bills, credit notes, payments, spend and receive money, transfers, manual journals, quotes, repeating invoices, tracking categories, reports. New invoices, bills, credit notes and journals are saved as drafts by default |
+| QuickBooks Desktop (beta) | QuickBooks Desktop Enterprise company files, through the QuickBooks Web Connector on the client's Windows machine: lists, transactions and reports, and writes such as bills, invoices, payments, journal entries and inventory adjustments. Reads of transactions and reports, and every write, need that machine on and connected |
+| Xero | Read and write: invoices, bills, credit notes, payments, spend and receive money, transfers, manual journals, quotes, repeating invoices, tracking categories, reports. New invoices, bills, credit notes and journals are saved as drafts by default |
 | Bill.com | Read bills, invoices, vendor credits, credit memos, payments, aging, vendors, customers and accounts; save drafts and edit vendors, customers, bills and open invoices. It never pays, approves or sends anything in BILL |
 | Stripe (for reporting) | Read only: balance, payouts, charges, refunds, disputes, invoices, customers and subscriptions. It never refunds, pays or changes anything in Stripe |
 
-A company's books are on QuickBooks Online or Xero (beta). Bill.com and Stripe connect next to the ledger, on the company's Connections tab in the DeepLedger portal.
+A company's books are on QuickBooks Online, QuickBooks Desktop or Xero. Bill.com and Stripe connect next to the ledger, on the company's Connections tab in the DeepLedger portal.
 
 ## Who it is for
 
 - **Accounting firms and bookkeepers** managing many client companies. One connection switches between companies on either ledger, every write follows the same checks, and uncertain items land in Tasks with the agent's reasoning attached.
 - **In-house finance teams** running several companies or entities, who want the month-end close, reconciliation prep and management reports drafted for review.
-- **Small business owners** who keep their own books in QuickBooks Online or Xero (beta) and want the routine entries, categorization and reports done for them.
+- **Small business owners** who keep their own books in QuickBooks Online, QuickBooks Desktop or Xero and want the routine entries, categorization and reports done for them.
 
 ## What it does
 
@@ -41,7 +42,7 @@ A company's books are on QuickBooks Online or Xero (beta). Bill.com and Stripe c
 
 ## How to use it
 
-1. **Connect your companies** at [deepledger.ai](https://deepledger.ai): each company's QuickBooks Online or Xero (beta) books, then Bill.com or Stripe on its Connections tab if you use them.
+1. **Connect your companies** at [deepledger.ai](https://deepledger.ai): each company's QuickBooks Online, QuickBooks Desktop or Xero books, then Bill.com or Stripe on its Connections tab if you use them.
 2. **Install the plugin** in your host (below) and sign in when the browser opens.
 3. **Ask in plain language.** The `bookkeeping` skill activates on any accounting request:
 
@@ -62,7 +63,7 @@ The plugin itself is thin: a connector to DeepLedger's hosted MCP server and one
 
 ## Prerequisites
 
-- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai), on QuickBooks Online or Xero (beta)
+- A DeepLedger account with at least one company connected at [deepledger.ai](https://deepledger.ai), on QuickBooks Online, QuickBooks Desktop or Xero
 - One of the hosts below
 
 ## Install
@@ -191,7 +192,27 @@ The `.mcp.json` connector points at DeepLedger's official hosted MCP server. It 
 | `qbReports` | Run profit and loss, balance sheet, aging and other QuickBooks reports |
 | `bankFeed` | Fetch unrecorded bank transactions and mark them once recorded |
 
-**Xero (beta)**
+**QuickBooks Desktop (beta)**
+
+Listed for users whose companies are all on QuickBooks Desktop; next to QuickBooks Online or Xero companies, reach them through `describeTool` and `callReadTool` / `callWriteTool`.
+
+| Tool | Capability |
+|------|------------|
+| `qbdesktopCompany` | The connected company file: name, fiscal year, features switched on |
+| `qbdesktopMasterData` | Look up every list (accounts, customers and jobs, vendors, items, classes and the reference lists); create or update list records |
+| `qbdesktopFetchTransactions` | Read every kind of transaction live from QuickBooks |
+| `qbdesktopReports` | Profit and loss, balance sheet, trial balance, general ledger, aging and other QuickBooks Desktop reports |
+| `qbdesktopSync` | How current the copy of the lists is; refresh it |
+| `qbdesktopPurchases` | Bills, vendor credits, purchase orders, item receipts, checks and card charges |
+| `qbdesktopSales` | Invoices, sales receipts, credit memos, estimates, sales orders and statement charges |
+| `qbdesktopPayments` | Received payments, bill payments and deposits (records that money moved; moves none) |
+| `qbdesktopJournalEntry` | General journal entries; debits must equal credits |
+| `qbdesktopInventory` | Adjust stock, build assemblies, transfer stock between sites |
+| `qbdesktopTime` | Time entries and mileage |
+| `qbdesktopCustomization` | Custom field values and definitions |
+| `qbdesktopVoidOrDelete` | Void or delete a transaction; delete, merge or inactivate a list record |
+
+**Xero**
 
 | Tool | Capability |
 |------|------------|
@@ -252,7 +273,7 @@ Plugin (this repo)
     | Streamable HTTP + OAuth 2.1
 MCP server (hosted at https://mcp.deepledger.ai/mcp)
   DeepLedger tools for every user, plus the tools of each connected app:
-  QuickBooks Online, Xero (beta), Bill.com, Stripe (for reporting)
+  QuickBooks Online, QuickBooks Desktop (beta), Xero, Bill.com, Stripe (for reporting)
 ```
 
 ## Data handling and support
