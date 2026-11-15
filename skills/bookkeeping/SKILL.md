@@ -19,6 +19,8 @@ Call `companies` first and tell the user the active company and its ledger. One 
 
 ## 2. Read the skill
 
+On a QuickBooks Desktop company, `skills`, `agentMemory` and review tasks (`tasks` operation `create`) are not available yet: skip this section and section 3's task step, follow the tool descriptions, and ask the user about anything uncertain.
+
 Call `skills(operation="list")` to see the company's skills, then `skills(operation="get", skill="...")` for the job. Each company has its own copy of DeepLedger's default skills, with its own preferences. Read it each time; do not rely on a remembered copy.
 
 | Task | Skill (typical name) |
@@ -45,7 +47,7 @@ For an unresolved tool failure, call `skills(operation="errors", tool="<failed t
 - Pay an outstanding bill or collect an outstanding invoice with the payment tool (`qbPayment`, `qbdesktopPayments` or `xeroPayment`). Do not create a second expense, deposit or sales receipt instead. The source account must differ from every line account.
 - Balance journal entries. Before voiding or deleting a transaction, fetch it, verify it and get the user's confirmation.
 - In Xero, new invoices, bills, credit notes and journals are saved as drafts by default.
-- QuickBooks Desktop is read only for now: its write tools refuse until writing is switched on, so tell the user a change is made in QuickBooks Desktop itself. On a Desktop company, `skills`, `agentMemory` and review tasks (`tasks` operation `create`) are not available yet: follow the tool descriptions and ask the user about anything uncertain instead of creating a task.
+- QuickBooks Desktop writes: run the write with `dryRun: true` first, show the user what it would do, and send it only after the user confirms. A result of `pending` is checked with `qbdesktopSync(operation: "job")`, never sent again; `QBDESKTOP_WRITE_UNCONFIRMED` means it may have been saved, so look for it before anything else. DeepLedger never moves money between bank accounts in QuickBooks Desktop: a person enters a transfer.
 - QuickBooks Desktop answers through the client's Windows machine. Lists come from DeepLedger's copy and say how old it is; transactions and reports are read from QuickBooks itself and can come back `pending` with a `jobId` to fetch with `operation: "result"`. If the machine is not connected, tell the user instead of retrying.
 - Bill.com: read, save drafts and edit only. Nothing here pays, approves or sends anything in BILL; a person finishes that in BILL.
 - Stripe is read only, for reporting.
