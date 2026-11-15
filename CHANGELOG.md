@@ -1,5 +1,16 @@
 # Changelog
 
+## [4.0.0] - 2026-11-14
+
+### Changed
+
+- The plugin now describes DeepLedger's unified MCP server at the same address (`https://mcp.deepledger.ai/mcp`): one connection for QuickBooks Online, Xero (beta), Bill.com (your own BILL credentials; never pays, approves or sends) and Stripe (for reporting, read only). Manifests, the marketplace entry and the README say so, and the tagline is "The accounting harness for AI".
+- README tool tables list the DeepLedger tools every user gets (`companies`, `connections`, `dashboard`, `describeTool`, `callReadTool`, `callWriteTool`, `tasks`, `agentMemory`, `documents`, `closeRun`, `closeTemplate`, `reconciliation`, `customReports`, `skills`, `getGuide`) and the tools of each app, listed for companies with that app connected: 19 `qb*` tools plus `bankFeed`, 15 `xero*` tools, 4 `billcom*` tools and `stripemcpRead`.
+- The `bookkeeping` skill confirms the company with `companies` (either ledger), reads the company's own playbook with `skills` (`list`, `get`, and `errors` for recovery) instead of `getGuide`, which the server keeps only as a compatibility alias, and names the Xero, Bill.com and Stripe rules.
+- Network declaration adds `/.well-known/oauth-protected-resource` and the Xero attachment upload (`https://xero.deepledger.ai/upload-to-xero`); the OAuth scope line no longer names only `quickbooks`.
+- Grok chat (grok.com/connectors) and Grok Bot (a custom MCP server added in chat; DeepLedger is not in the Grok Bot plugin catalog) are described separately, with the setup guide; Cursor install is the local install plus the setup guide; the contact address is hello@deepledger.ai.
+- `.claude-plugin/plugin.json` declares `privacyPolicyUrl` (https://deepledger.ai/privacy), as `claude plugin validate` suggests.
+
 ## [3.1.5] - 2026-10-05
 
 ### Changed
